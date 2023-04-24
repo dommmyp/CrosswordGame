@@ -176,6 +176,7 @@ function App() {
         pendingGames: oppData.pendingGames,
         friends: oppData.friends,
       });
+      console.log(currNum)
       players[currNum++] = {
         uid: oppData.uid,
         email: oppData.email,
@@ -198,7 +199,6 @@ function App() {
       }
       emptyCross[i].x = arr[i];
     }
-
     await setDoc(doc(crosswordsRef, gameID), {
       grid: emptyCross,
       pid: pid,

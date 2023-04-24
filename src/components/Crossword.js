@@ -229,6 +229,7 @@ const Crossword = (props) => {
         onAdd();
       }
       if (event.key === "Backspace") {
+        event.preventDefault();
         if (array[i][j].user == currUser) {
           array[i][j].content = "";
           array[i][j].user = -1;
@@ -241,6 +242,7 @@ const Crossword = (props) => {
         (event.key === "ArrowLeft") |
         (event.key === "ArrowRight")
       ) {
+        event.preventDefault();
         onArrow(event.key);
       }
     };
