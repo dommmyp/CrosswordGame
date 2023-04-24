@@ -125,7 +125,7 @@ nav{
   position: fixed;
   top: 0;
   overflow: hidden;
-  background: rgba(151, 173, 164, 0.85);
+  background: rgba(171, 193, 184, 0.85);
   z-index: 1000;
   /* border-bottom: 2px solid rgb(120, 120, 120); */
   /* opacity: 0.85; */
@@ -221,6 +221,14 @@ h2{
   overflow: scroll;
 }
 
+.scoreHeader{
+  font-size: 20px;
+  padding: 5px 10px;
+  font-weight: bold;
+  background-color: rgb(171, 193, 184);
+  border-radius: 10px;
+  width: 300px;
+}
 
 .crosswordList{
   margin: 0px 20px;
@@ -413,7 +421,7 @@ h3{
 }
 
 .scores{
-  margin-bottom: 10px;
+  margin: 10px 0;
   background-color: rgb(171, 193, 184);
   width: 300px;
   height: 300px;

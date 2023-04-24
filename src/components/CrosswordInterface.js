@@ -6,8 +6,8 @@ const CrosswordInterface = (props) => {
 
   return (
     <div className="interface">
+        <div className="scoreHeader">SCORES</div>
       <div className="scores">
-        <h2>Scores</h2>
         <div style={{ fontSize: "30px", fontWeight: "bold", display: activeCrosswordInfo.scores[0]!=0 ? 'block' : 'none' }}>
           Player 1:<div style={{ color: "rgb(121, 13, 63)" }}>{activeCrosswordInfo.scores[0]}</div>
         </div>

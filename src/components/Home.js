@@ -123,7 +123,7 @@ const Home = (props) => {
         </div>
       </div>
       </div>
-      <div style={{background: 'rgb(151, 173, 164)'}}>
+      <div style={{background: 'rgb(171, 193, 184)'}}>
       <h2 style={{color: 'rgb(32,32,32)'}}>Sudoku</h2>
       <div className="subHomePage">
       <div className="imgContainer">

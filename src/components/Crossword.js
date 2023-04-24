@@ -518,7 +518,8 @@ const Crossword = (props) => {
                         ref={(el) => (downRef.current[index] = el)}
                         className={"clue"}
                         style={{
-                          background: activeClueNum == index ? "grey" : "",
+                          background: activeClueNum == index ? "rgb(65,65,65)" : "",
+                          color: activeClueNum == index ? "rgb(171,193,184)" : "",
                           display: item ? "block" : "none",
                         }}
                         key={index}
@@ -552,7 +553,8 @@ const Crossword = (props) => {
                       ref={(el) => (acrossRef.current[index] = el)}
                         className={"clue"}
                         style={{
-                          background: activeClueNum == index ? "grey" : "",
+                          background: activeClueNum == index ? "rgb(65,65,65)" : "",
+                          color: activeClueNum == index ? "rgb(171,193,184)" : "",
                           display: item ? "block" : "none",
                         }}
                         onClick={() => setActiveByClue(index)}
