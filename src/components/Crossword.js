@@ -133,9 +133,13 @@ const Crossword = (props) => {
 
   const onArrow = (arrow) => {
     if (arrow == "ArrowRight") {
-      setIsHorizontal(true);
       let a = active[0];
       let b = active[1] + 1;
+
+      if(!isHorizontal){
+        b--;
+      }
+      setIsHorizontal(true);
       while (true) {
         if (b == activeSolution.grid[0].length) {
           a++;
@@ -153,9 +157,12 @@ const Crossword = (props) => {
       doActive(a, b, 1);
     }
     if (arrow == "ArrowDown") {
-      setIsHorizontal(false);
       let a = active[0] + 1;
       let b = active[1];
+      if(isHorizontal){
+        a--;
+      }
+      setIsHorizontal(false);
       while (true) {
         if (a == activeSolution.grid.length) {
           b++;
@@ -172,9 +179,12 @@ const Crossword = (props) => {
       doActive(a, b, -1);
     }
     if (arrow == "ArrowLeft") {
-      setIsHorizontal(true);
       let a = active[0];
       let b = active[1] - 1;
+      if(!isHorizontal){
+        b++;
+      }
+      setIsHorizontal(true);
       while (true) {
         if (b == -1) {
           a--;
@@ -192,9 +202,12 @@ const Crossword = (props) => {
       doActive(a, b, 1);
     }
     if (arrow == "ArrowUp") {
-      setIsHorizontal(false);
       let a = active[0] - 1;
       let b = active[1];
+      if(isHorizontal){
+        a++;
+      }
+      setIsHorizontal(false);
       while (true) {
         if (a == -1) {
           b--;
