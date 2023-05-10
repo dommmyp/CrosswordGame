@@ -1,11 +1,5 @@
-
-
-const Minesweeper = () =>{
-
-   return (
-      <div>
-      </div>
-   )
-}
+const Minesweeper = () => {
+  return <div></div>;
+};
 
 export default Minesweeper;

@@ -1,48 +1,48 @@
-:root{
+:root {
   --mouse-x: 0;
   --mouse-y: 0;
 }
 
-*{
-  padding:0;
+* {
+  padding: 0;
   margin: 0;
   /* font-family: 'Roboto', sans-serif; */
-  font-family: 'Barlow Semi Condensed', sans-serif;
+  font-family: "Barlow Semi Condensed", sans-serif;
   font-weight: bold;
 }
 
-.friendItem{
+.friendItem {
   display: flex;
 }
 
-.profileNav{
+.profileNav {
   width: 100%;
   /* background-color: rgb(171, 193, 184); */
   display: flex;
 }
 
-.profileNavItemActive{
+.profileNavItemActive {
   text-align: center;
   justify-content: center;
   /* border: 1px solid rgb(222, 222, 222); */
-  color: rgb(65,65,65);
+  color: rgb(65, 65, 65);
   background-color: rgb(171, 193, 184);
   flex: 1;
   border-radius: 5px;
   padding: 5px;
 }
 
-.profileNavItem{
+.profileNavItem {
   text-align: center;
   justify-content: center;
-  border: 1px solid rgb(65,65,65);
+  border: 1px solid rgb(65, 65, 65);
   color: rgb(171, 193, 184);
   flex: 1;
   border-radius: 5px;
   padding: 5px;
 }
 
-.friendSearch{
+.friendSearch {
   height: 30px;
   width: 200px;
   padding: 2px;
@@ -50,10 +50,10 @@
   border-radius: 5px;
   background-color: rgb(171, 193, 184);
   font-size: 24px;
-  color: rgb(65,65,65);
+  color: rgb(65, 65, 65);
 }
 
-.gridInput{
+.gridInput {
   height: 100%;
   width: 40px;
   background: none;
@@ -64,10 +64,10 @@
   font-size: 20px;
 }
 
-.profileFullWidth{
+.profileFullWidth {
   right: 0px;
 }
-.profileHide{
+.profileHide {
   right: -400px;
 }
 .profilePage {
@@ -77,38 +77,35 @@
   bottom: 0;
   top: 75px;
   z-index: 60;
-  background-color: rgb(48,48,48);
+  background-color: rgb(48, 48, 48);
   opacity: 0.95;
-  color:rgb(222, 222, 222);
+  color: rgb(222, 222, 222);
   font-size: 24px;
 }
-.profile
 
-.logIn{
+.logIn {
   padding: 100px;
   font-size: 50px;
-  margin: 150px auto;
-
-
+  margin: 200px;
 }
 
-.App{
+.App {
   display: flex;
   align-items: center;
 }
 
-.bar{
+.bar {
   height: 20px;
   background-color: red;
-  margin: 5px; 
+  margin: 5px;
   border-radius: 5px;
 }
 
-input:focus-visible{
+input:focus-visible {
   outline: none;
 }
 
-.crosswordListWrapper{
+.crosswordListWrapper {
   display: flex;
   flex-direction: column;
   overflow: scroll;
@@ -117,7 +114,7 @@ input:focus-visible{
   font-size: 24px;
 }
 
-nav{
+nav {
   font-weight: bold;
   height: 75px;
   width: 100%;
@@ -131,9 +128,9 @@ nav{
   /* opacity: 0.85; */
 }
 
-.title{
+.title {
   font-weight: bold;
-  color: rgb(50,50,50);
+  color: rgb(50, 50, 50);
   /* font-weight:lighter; */
   font-size: 40px;
   display: inline-block;
@@ -142,30 +139,28 @@ nav{
   margin-left: 5px;
 }
 
-
-
-html{
+html {
   background: rgb(48, 48, 48);
 }
-.profPic{
+.profPic {
   font-size: 40px;
   color: rgb(171, 193, 184);
 }
 
-nav *{
+nav * {
   margin: 5px 0px;
   padding: 15px;
   text-decoration: none;
-  color: rgb(50,50,50);
+  color: rgb(50, 50, 50);
   font-size: 30px;
   border-radius: 10px;
   float: right;
   height: 35px;
   z-index: 100000;
-  position:relative
+  position: relative;
 }
 
-.noCrosswordLink{
+.noCrosswordLink {
   padding: 20px;
   display: block;
   text-decoration: none;
@@ -174,35 +169,35 @@ nav *{
   border-radius: 10px;
   z-index: 100000;
   margin: 300px;
-  color:rgb(48, 48, 48)
+  color: rgb(48, 48, 48);
 }
 
-.interface{
+.interface {
   margin: 10px;
 }
 
-.grid{
+.grid {
   aspect-ratio: 1/1;
-  width: 500px; 
+  width: 500px;
   height: 500px;
   display: flex;
   flex-direction: column;
   margin: 10px;
 }
 
-h2{
+h2 {
   color: rgb(171, 193, 184);
   opacity: 0.8;
   font-size: 40px;
   padding: 20px 240px;
 }
 
-.homePage{
+.homePage {
   display: block;
   margin-top: 75px;
 }
 
-.crosswordListItem{
+.crosswordListItem {
   display: inline-block;
   background-color: rgb(171, 193, 184);
   padding: 20px;
@@ -211,7 +206,7 @@ h2{
   font-weight: bold;
 }
 
-.clueList{
+.clueList {
   width: 300px;
   height: 450px;
   margin: 10px;
@@ -221,7 +216,7 @@ h2{
   overflow: scroll;
 }
 
-.scoreHeader{
+.scoreHeader {
   font-size: 20px;
   padding: 5px 10px;
   font-weight: bold;
@@ -230,38 +225,38 @@ h2{
   width: 300px;
 }
 
-.crosswordList{
+.crosswordList {
   margin: 0px 20px;
   display: flex;
   flex-direction: column;
 }
 
-.subHomePage{
+.subHomePage {
   display: flex;
   height: 700px;
-  width: 100vw
+  width: 100vw;
 }
 
-.homepageButton{
+.homepageButton {
   height: 100px;
   margin: 20px;
 }
 
-.border{
+.border {
   width: 100%;
   height: 100%;
-  z-index:30;
+  z-index: 30;
   position: absolute;
 }
 
-.active{
+.active {
   width: 100%;
   height: 100%;
-  z-index:30;
+  z-index: 30;
   position: absolute;
 }
 
-.boxContent{
+.boxContent {
   width: 100%;
   height: 100%;
   line-height: 100%;
@@ -271,8 +266,7 @@ h2{
   text-align: center;
 }
 
-
-.clueNum{
+.clueNum {
   font-weight: bold;
   width: 100%;
   font-size: 10px;
@@ -280,7 +274,7 @@ h2{
   position: absolute;
 }
 
-.clueHeader{
+.clueHeader {
   font-size: 20px;
   padding: 5px;
   font-weight: bold;
@@ -290,42 +284,40 @@ h2{
   margin: 10px;
 }
 
-.crossword{
+.crossword {
   display: flex;
   margin-top: 100px;
-  color:rgb(48, 48, 48) !important;
+  color: rgb(48, 48, 48) !important;
   flex-wrap: wrap;
 }
 
-.sudoku{
+.sudoku {
   margin: 100px 0 0 300px;
 }
 
-.sudokuGridItem{
+.sudokuGridItem {
   flex: 1;
   position: relative;
-  border: 0.5px solid rgb(48,48,48);
+  border: 0.5px solid rgb(48, 48, 48);
   font-size: 40px;
   text-align: center;
   justify-content: center;
 }
 
+.sudokuGridRow *:nth-child(3n) {
+  box-shadow: inset -3px 0px 0px 0px rgb(48, 48, 48); /* Border bottom */
+}
+.sudokuGridRow:nth-child(3n + 1) * {
+  box-shadow: inset 0px 3px 0px 0px rgb(48, 48, 48); /* Border bottom */
+}
+.sudokuGridRow:nth-child(3n + 1) *:nth-child(3n) {
+  box-shadow: inset -3px 3px 0px 0px rgb(48, 48, 48); /* Border bottom */
+}
 
-.sudokuGridRow *:nth-child(3n){
-  box-shadow: inset -3px 0px 0px 0px rgb(48,48,48); /* Border bottom */
- }
- .sudokuGridRow:nth-child(3n+1) *{
-  box-shadow: inset 0px 3px 0px 0px rgb(48,48,48); /* Border bottom */
- }
- .sudokuGridRow:nth-child(3n+1) *:nth-child(3n){
-  box-shadow: inset -3px 3px 0px 0px rgb(48,48,48); /* Border bottom */
- }
-
-
-button{
+button {
   background-color: rgb(171, 193, 184);
   font-weight: bold;
-  color: rgb(48,48,48);
+  color: rgb(48, 48, 48);
   padding: 15px;
   box-shadow: none;
   border: none;
@@ -334,37 +326,37 @@ button{
   font-size: 24px;
 }
 
-button:hover{
-  background-color: rgb(65,65,65);
+button:hover {
+  background-color: rgb(65, 65, 65);
   color: rgb(171, 193, 184);
 }
-a:hover{
-  background-color: rgb(65,65,65);
+a:hover {
+  background-color: rgb(65, 65, 65);
   color: rgb(171, 193, 184) !important;
 }
-.crosswordPic{
+.crosswordPic {
   width: 600px;
   aspect-ratio: 1/1;
-  transform: rotateY(calc(min(var(--mouse-x), 0.8) * 8deg - 4deg)) rotateX(calc(var(--mouse-y) * -8deg + 4deg));
+  transform: rotateY(calc(min(var(--mouse-x), 0.8) * 8deg - 4deg))
+    rotateX(calc(var(--mouse-y) * -8deg + 4deg));
   z-index: -10;
 }
 /* background: transparent radial-gradient(at calc(var(--mouse-x, 0) * 100%) 
 calc(var(--mouse-y, 0) * 100%), yellow, green) no-repeat 0 0 */
-.imgContainer{
-    -webkit-perspective: 500px;
-    perspective: 500px;
-    margin: 0 50px 0 50px;
+.imgContainer {
+  -webkit-perspective: 500px;
+  perspective: 500px;
+  margin: 0 50px 0 50px;
 }
 
-
-.crosswordListItem{
+.crosswordListItem {
   border: none;
-  color:rgb(48, 48, 48);
+  color: rgb(48, 48, 48);
   text-decoration: none;
 }
 
-h3{
-  color:rgb(222, 222, 222);
+h3 {
+  color: rgb(222, 222, 222);
   display: inline;
   width: 100%;
   padding-left: 100px;
@@ -372,55 +364,55 @@ h3{
   opacity: 0.8;
 }
 
-.clue{
+.clue {
   font-weight: bold;
   padding: 5px;
 }
 
-.correct{
+.correct {
   width: 100%;
   height: 100%;
   position: absolute;
   z-index: 50;
 }
 
-.challenge{
+.challenge {
   width: 100%;
   height: 100%;
   position: absolute;
   z-index: 60;
 }
 
-.userColor{
+.userColor {
   width: 100%;
   height: 100%;
   position: absolute;
 }
 
-.activeLine{
+.activeLine {
   width: 100%;
   height: 100%;
   position: absolute;
 }
 
-.gridRow{
+.gridRow {
   flex: 1;
   display: flex;
   flex-direction: row;
 }
-.sudokuGridRow{
+.sudokuGridRow {
   flex: 1;
   display: flex;
   flex-direction: row;
 }
 
-.gridItem{
+.gridItem {
   flex: 1;
   position: relative;
-  border: 0.5px solid rgb(48,48,48);
+  border: 0.5px solid rgb(48, 48, 48);
 }
 
-.scores{
+.scores {
   margin: 10px 0;
   background-color: rgb(171, 193, 184);
   width: 300px;

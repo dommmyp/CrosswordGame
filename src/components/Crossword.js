@@ -20,17 +20,25 @@ const Crossword = (props) => {
   const [challengeActive, setChallengeActive] = useState(false);
   const [activeClueNum, setActiveClueNum] = useState(0);
 
-  const downRef = useRef([])
-  const acrossRef = useRef([])
+  const downRef = useRef([]);
+  const acrossRef = useRef([]);
 
-  useEffect(()=>{
-    if(isHorizontal){
+  useEffect(() => {
+    if (isHorizontal) {
       // acrossRef.current?[activeClueNum].scrollIntoView({ behavior: "smooth" })
-      acrossRef.current[activeClueNum]?.scrollIntoView({ behavior: "smooth",block: "nearest", inline: "nearest" });
-    } else{
-      downRef.current[activeClueNum]?.scrollIntoView({ behavior: "smooth",block: "nearest", inline: "nearest" });
+      acrossRef.current[activeClueNum]?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "nearest",
+      });
+    } else {
+      downRef.current[activeClueNum]?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "nearest",
+      });
     }
-  },[activeClueNum])
+  }, [activeClueNum]);
 
   useEffect(() => {
     if (activeCrosswordInfo) {
@@ -41,8 +49,9 @@ const Crossword = (props) => {
             count++;
             return true;
           }
+          return false;
         });
-        if (count != 0) {
+        if (count !== 0) {
           setCurrUser(userNum[0].userNum);
         }
       }
@@ -54,11 +63,11 @@ const Crossword = (props) => {
       let a = active[0];
       let b = active[1] - 1;
       while (true) {
-        if (b == -1) {
+        if (b === -1) {
           a--;
           b = activeSolution.grid[0].length - 1;
         }
-        if (a == -1) {
+        if (a === -1) {
           a = activeSolution.grid.length - 1;
         }
         if (activeSolution.grid[a][b] !== ".") {
@@ -72,11 +81,11 @@ const Crossword = (props) => {
       let a = active[0] - 1;
       let b = active[1];
       while (true) {
-        if (a == -1) {
+        if (a === -1) {
           b--;
           a = activeSolution.grid.length - 1;
         }
-        if (b == -1) {
+        if (b === -1) {
           b = activeSolution.grid[0].length - 1;
         }
         if (activeSolution.grid[a][b] !== ".") {
@@ -95,11 +104,11 @@ const Crossword = (props) => {
       let a = active[0];
       let b = active[1] + 1;
       while (true) {
-        if (b == activeSolution.grid[0].length) {
+        if (b === activeSolution.grid[0].length) {
           a++;
           b = 0;
         }
-        if (a == activeSolution.grid.length) {
+        if (a === activeSolution.grid.length) {
           a = 0;
         }
         if (activeSolution.grid[a][b] !== ".") {
@@ -113,11 +122,11 @@ const Crossword = (props) => {
       let a = active[0] + 1;
       let b = active[1];
       while (true) {
-        if (a == activeSolution.grid.length) {
+        if (a === activeSolution.grid.length) {
           b++;
           a = 0;
         }
-        if (b == activeSolution.grid[0].length) {
+        if (b === activeSolution.grid[0].length) {
           b = 0;
         }
         if (activeSolution.grid[a][b] !== ".") {
@@ -132,20 +141,20 @@ const Crossword = (props) => {
   };
 
   const onArrow = (arrow) => {
-    if (arrow == "ArrowRight") {
+    if (arrow === "ArrowRight") {
       let a = active[0];
       let b = active[1] + 1;
 
-      if(!isHorizontal){
+      if (!isHorizontal) {
         b--;
       }
       setIsHorizontal(true);
       while (true) {
-        if (b == activeSolution.grid[0].length) {
+        if (b === activeSolution.grid[0].length) {
           a++;
           b = 0;
         }
-        if (a == activeSolution.grid.length) {
+        if (a === activeSolution.grid.length) {
           a = 0;
         }
         if (activeSolution.grid[a][b] !== ".") {
@@ -156,19 +165,19 @@ const Crossword = (props) => {
       }
       doActive(a, b, 1);
     }
-    if (arrow == "ArrowDown") {
+    if (arrow === "ArrowDown") {
       let a = active[0] + 1;
       let b = active[1];
-      if(isHorizontal){
+      if (isHorizontal) {
         a--;
       }
       setIsHorizontal(false);
       while (true) {
-        if (a == activeSolution.grid.length) {
+        if (a === activeSolution.grid.length) {
           b++;
           a = 0;
         }
-        if (b == activeSolution.grid[0].length) {
+        if (b === activeSolution.grid[0].length) {
           b = 0;
         }
         if (activeSolution.grid[a][b] !== ".") {
@@ -178,19 +187,19 @@ const Crossword = (props) => {
       }
       doActive(a, b, -1);
     }
-    if (arrow == "ArrowLeft") {
+    if (arrow === "ArrowLeft") {
       let a = active[0];
       let b = active[1] - 1;
-      if(!isHorizontal){
+      if (!isHorizontal) {
         b++;
       }
       setIsHorizontal(true);
       while (true) {
-        if (b == -1) {
+        if (b === -1) {
           a--;
           b = activeSolution.grid[0].length - 1;
         }
-        if (a == -1) {
+        if (a === -1) {
           a = activeSolution.grid.length - 1;
         }
         if (activeSolution.grid[a][b] !== ".") {
@@ -201,19 +210,19 @@ const Crossword = (props) => {
       }
       doActive(a, b, 1);
     }
-    if (arrow == "ArrowUp") {
+    if (arrow === "ArrowUp") {
       let a = active[0] - 1;
       let b = active[1];
-      if(isHorizontal){
+      if (isHorizontal) {
         a++;
       }
       setIsHorizontal(false);
       while (true) {
-        if (a == -1) {
+        if (a === -1) {
           b--;
           a = activeSolution.grid.length - 1;
         }
-        if (b == -1) {
+        if (b === -1) {
           b = activeSolution.grid[0].length - 1;
         }
         if (activeSolution.grid[a][b] !== ".") {
@@ -233,7 +242,7 @@ const Crossword = (props) => {
       if (wasAnyKeyPressed) {
         event.preventDefault();
         if (
-          (array[i][j].content == "") | (array[i][j].user == currUser) &&
+          (array[i][j].content === "") | (array[i][j].user === currUser) &&
           !array[i][j].confirmed
         ) {
           array[i][j].content = event.key;
@@ -243,7 +252,7 @@ const Crossword = (props) => {
       }
       if (event.key === "Backspace") {
         event.preventDefault();
-        if (array[i][j].user == currUser) {
+        if (array[i][j].user === currUser) {
           array[i][j].content = "";
           array[i][j].user = -1;
         }
@@ -317,16 +326,16 @@ const Crossword = (props) => {
     }
     for (let i = 0; i < activeSolution.grid.length; i++) {
       for (let j = 0; j < activeSolution.grid.length; j++) {
-        if (activeSolution.grid[i][j] == ".") {
+        if (activeSolution.grid[i][j] === ".") {
           continue;
         }
-        if (i == 0) {
+        if (i === 0) {
           tempClueNums[i][j] = currIndex;
           currIndex++;
         } else if (activeSolution.grid[i - 1][j] === ".") {
           tempClueNums[i][j] = currIndex;
           currIndex++;
-        } else if (j == 0) {
+        } else if (j === 0) {
           tempClueNums[i][j] = currIndex;
           currIndex++;
         } else if (activeSolution.grid[i][j - 1] === ".") {
@@ -341,22 +350,22 @@ const Crossword = (props) => {
   const doActive = (i, j, hor) => {
     let tempHor = isHorizontal;
     if (hor) {
-      if (hor == 1) {
+      if (hor === 1) {
         setIsHorizontal(true);
         tempHor = true;
       }
-      if (hor == -1) {
+      if (hor === -1) {
         setIsHorizontal(false);
         tempHor = false;
       }
     }
-    if (activeSolution.length == 0) {
+    if (activeSolution.length === 0) {
       return;
     }
-    if (activeSolution.grid[i][j] == ".") {
+    if (activeSolution.grid[i][j] === ".") {
       return;
     }
-    if (active[0] == i && active[1] == j) {
+    if (active[0] === i && active[1] === j) {
       tempHor = !isHorizontal;
       setIsHorizontal(!isHorizontal);
     }
@@ -372,7 +381,7 @@ const Crossword = (props) => {
         while (activeSolution.grid[a][b] != ".") {
           newLine.push([a, b]);
           b++;
-          if (b == activeSolution.grid[0].length) {
+          if (b === activeSolution.grid[0].length) {
             break;
           }
         }
@@ -383,7 +392,7 @@ const Crossword = (props) => {
         while (activeSolution.grid[a][b] != ".") {
           newLine.push([a, b]);
           b--;
-          if (b == -1) {
+          if (b === -1) {
             break;
           }
         }
@@ -395,7 +404,7 @@ const Crossword = (props) => {
         while (activeSolution.grid[a][b] != ".") {
           newLine.push([a, b]);
           a++;
-          if (a == activeSolution.grid.length) {
+          if (a === activeSolution.grid.length) {
             break;
           }
         }
@@ -406,7 +415,7 @@ const Crossword = (props) => {
         while (activeSolution.grid[a][b] != ".") {
           newLine.push([a, b]);
           a--;
-          if (a == -1) {
+          if (a === -1) {
             break;
           }
         }
@@ -428,7 +437,7 @@ const Crossword = (props) => {
           continue;
         }
         if (
-          activeCrossword[i][j].content ==
+          activeCrossword[i][j].content ===
           activeSolution.grid[i][j].toLowerCase()
         ) {
           activeCrossword[i][j].confirmed = true;
@@ -461,7 +470,7 @@ const Crossword = (props) => {
     setActiveClueNum(index);
     for (let i = 0; i < clueNums.length; i++) {
       for (let j = 0; j < clueNums[i].length; j++) {
-        if (clueNums[i][j] == index) {
+        if (clueNums[i][j] === index) {
           doActive(i, j);
         }
       }
@@ -500,15 +509,15 @@ const Crossword = (props) => {
             {activeSolution.info.title} -- {activeSolution.info.author}
           </h3>
           <div>
-              {!isHorizontal && (
-                <div
-                  className="clueHeader"
-                  onClick={() => setIsHorizontal(true)}
-                >
-                  DOWN
-                </div>
-              )}
-            <div className="clueList" style={{display: !isHorizontal ? 'block' : 'none'}}>
+            {!isHorizontal && (
+              <div className="clueHeader" onClick={() => setIsHorizontal(true)}>
+                DOWN
+              </div>
+            )}
+            <div
+              className="clueList"
+              style={{ display: !isHorizontal ? "block" : "none" }}
+            >
               {activeSolution &&
                 !isHorizontal &&
                 activeSolution.clues?.down.map((item, index) => {
@@ -518,8 +527,10 @@ const Crossword = (props) => {
                         ref={(el) => (downRef.current[index] = el)}
                         className={"clue"}
                         style={{
-                          background: activeClueNum == index ? "rgb(65,65,65)" : "",
-                          color: activeClueNum == index ? "rgb(171,193,184)" : "",
+                          background:
+                            activeClueNum === index ? "rgb(65,65,65)" : "",
+                          color:
+                            activeClueNum === index ? "rgb(171,193,184)" : "",
                           display: item ? "block" : "none",
                         }}
                         key={index}
@@ -535,26 +546,31 @@ const Crossword = (props) => {
                   );
                 })}
             </div>
-              {isHorizontal && (
-                <div
-                  className="clueHeader"
-                  onClick={() => setIsHorizontal(false)}
-                >
-                  ACROSS
-                </div>
-              )}
-            <div className="clueList" style={{display: isHorizontal ? 'block' : 'none'}}>
+            {isHorizontal && (
+              <div
+                className="clueHeader"
+                onClick={() => setIsHorizontal(false)}
+              >
+                ACROSS
+              </div>
+            )}
+            <div
+              className="clueList"
+              style={{ display: isHorizontal ? "block" : "none" }}
+            >
               {activeSolution &&
                 isHorizontal &&
                 activeSolution.clues.across.map((item, index) => {
                   return (
                     clueNums.length != 0 && (
                       <div
-                      ref={(el) => (acrossRef.current[index] = el)}
+                        ref={(el) => (acrossRef.current[index] = el)}
                         className={"clue"}
                         style={{
-                          background: activeClueNum == index ? "rgb(65,65,65)" : "",
-                          color: activeClueNum == index ? "rgb(171,193,184)" : "",
+                          background:
+                            activeClueNum === index ? "rgb(65,65,65)" : "",
+                          color:
+                            activeClueNum === index ? "rgb(171,193,184)" : "",
                           display: item ? "block" : "none",
                         }}
                         onClick={() => setActiveByClue(index)}
@@ -586,7 +602,7 @@ const Crossword = (props) => {
                         className={"gridItem"}
                         style={{
                           background:
-                            activeSolution.grid[i][j] == "."
+                            activeSolution.grid[i][j] === "."
                               ? "none"
                               : "rgb(171, 193, 184)",
                         }}
@@ -601,7 +617,7 @@ const Crossword = (props) => {
                           className="active"
                           style={{
                             background:
-                              active[0] == i && active[1] == j
+                              active[0] === i && active[1] === j
                                 ? "lightgrey"
                                 : "",
                             zIndex: 400,
@@ -621,7 +637,7 @@ const Crossword = (props) => {
                           className="activeLine"
                           style={{
                             background: activeLine.some(
-                              (k) => k[0] == i && k[1] == j
+                              (k) => k[0] === i && k[1] === j
                             )
                               ? "grey"
                               : "",
@@ -652,7 +668,7 @@ const Crossword = (props) => {
                           className="userColor"
                           style={{
                             display:
-                              activeCrossword[i][j].user == 0
+                              activeCrossword[i][j].user === 0
                                 ? "block"
                                 : "none",
                             background: "#477e89",
@@ -662,7 +678,7 @@ const Crossword = (props) => {
                           className="userColor"
                           style={{
                             display:
-                              activeCrossword[i][j].user == 1
+                              activeCrossword[i][j].user === 1
                                 ? "block"
                                 : "none",
                             background: "#a37774",
@@ -672,7 +688,7 @@ const Crossword = (props) => {
                           className="userColor"
                           style={{
                             display:
-                              activeCrossword[i][j].user == 2
+                              activeCrossword[i][j].user === 2
                                 ? "block"
                                 : "none",
                             background: "#83819f",
@@ -682,7 +698,7 @@ const Crossword = (props) => {
                           className="userColor"
                           style={{
                             display:
-                              activeCrossword[i][j].user == 3
+                              activeCrossword[i][j].user === 3
                                 ? "block"
                                 : "none",
                             background: "#bfac80",

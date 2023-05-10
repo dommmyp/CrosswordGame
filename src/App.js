@@ -52,13 +52,11 @@ function App() {
     setActiveCrossword,
     setActiveSolution,
     activeSolution,
-    friendsList,
     setFriendsList,
   } = useContext(FileContext);
   const [crosswords, setCrosswords] = useState([]);
   const [user] = useAuthState(auth);
   const [showProfile, setShowProfile] = useState(false);
-  let a;
   useEffect(() => {
     getCrosswordData();
   }, []);
@@ -91,7 +89,7 @@ function App() {
   const resumeCrossword = async (index) => {
     const gameID = self.crosswords[index].gameID;
     const pid = self.crosswords[index].pid;
-    a = onSnapshot(doc(db, "crosswords", gameID), (doc) => {
+    onSnapshot(doc(db, "crosswords", gameID), (doc) => {
       const content = doc.data();
       const newArr = [];
       for (let i = 0; i < content.grid.length; i++) {
@@ -121,7 +119,7 @@ function App() {
     }
     setActiveCrossword(newArr);
     let cross = crosswords.filter((item) => {
-      return item.pid == pid;
+      return item.pid === pid;
     });
     setActiveSolution(cross[0].content);
   };
@@ -156,7 +154,6 @@ function App() {
       pendingGames: userData.pendingGames,
       friends: userData.friends,
     });
-    
 
     await opponentIDs.forEach(async (oppID) => {
       const oppDoc = doc(db, "users", oppID);
@@ -166,7 +163,7 @@ function App() {
         gameID: gameID,
         name: crosswords[index].content.info.title,
         pid: pid,
-        userNum: currNum,
+        userNum: currNum++,
       });
       await setDoc(doc(userRef, oppID), {
         uid: oppData.uid,
@@ -176,7 +173,6 @@ function App() {
         pendingGames: oppData.pendingGames,
         friends: oppData.friends,
       });
-      console.log(currNum)
       players[currNum++] = {
         uid: oppData.uid,
         email: oppData.email,
@@ -203,12 +199,12 @@ function App() {
       grid: emptyCross,
       pid: pid,
       gameID: gameID,
-      scores: [0,0,0,0],
+      scores: [0, 0, 0, 0],
       players: players,
     });
     setActiveCrossword(arr);
 
-    a = onSnapshot(doc(db, "crosswords", gameID), (doc) => {
+    onSnapshot(doc(db, "crosswords", gameID), (doc) => {
       const content = doc.data();
       const newArr = [];
       for (let i = 0; i < content.grid.length; i++) {
@@ -219,13 +215,13 @@ function App() {
         pid: content.pid,
         gameID: content.gameID,
         scores: content.scores,
-        players: content.players
+        players: content.players,
       });
     });
     setActiveCrosswordInfo({
       pid: pid,
       gameID: gameID,
-      scores: [0,0,0,0],
+      scores: [0, 0, 0, 0],
       players: players,
     });
     setActiveSolution(crosswords[index].content);
@@ -246,38 +242,61 @@ function App() {
     checkComplete();
   };
 
-  const checkComplete = () =>{
+  const checkComplete = () => {
     let correct = true;
-    activeCrossword.forEach((item, i)=>{
-      item.forEach((subItem, j)=>{
-        if(subItem.content != '.'){
-          if(subItem.content != activeSolution.grid[i][j].toLowerCase()){
+    activeCrossword.forEach((item, i) => {
+      item.forEach((subItem, j) => {
+        if (subItem.content !== ".") {
+          if (subItem.content !== activeSolution.grid[i][j].toLowerCase()) {
             correct = false;
-          } else{
-            console.log('correct');
+          } else {
+            console.log("correct");
           }
         }
-      })
-    })
-    if(correct){
-      window.alert('correct');
+      });
+    });
+    if (correct) {
+      window.alert("correct");
     }
-  }
+  };
 
-  const getUsers = async () =>{
+  const getUsers = async () => {
     const snapshot = await firebase.firestore().collection("users").get();
-      let friendsData = [];
-      snapshot.docs.map((doc) => friendsData.push(doc.data()));
-      return friendsData;
-  }
+    let friendsData = [];
+    snapshot.docs.map((doc) => {
+      // console.log(doc.data())
+      if (
+        self.friends.filter((item) => {
+          return item.uid === doc.data().uid;
+        }).length === 0 &&
+        doc.data().uid !== self.uid
+      ) {
+        friendsData.push(doc.data());
+      }
+      return false;
+    });
+    return friendsData;
+  };
 
-  const addFriend = async (friend) =>{
+  const addFriend = async (friend) => {
     const newFriends = self.friends;
+    console.log(friend);
     console.log(newFriends);
+    const filter = newFriends.filter((item) => {
+      return item.uid === friend.uid;
+    });
+    if (filter.length !== 0) {
+      console.log("same");
+      return;
+    }
+    if (friend.uid === self.uid) {
+      console.log("self");
+      return;
+    }
     newFriends.push({
       email: friend.email,
       name: friend.name,
-      uid: friend.uid
+      uid: friend.uid,
     });
     await setDoc(doc(userRef, self.uid), {
       uid: self.uid,
@@ -287,7 +306,7 @@ function App() {
       pendingGames: self.pendingGames,
       friends: newFriends,
     });
-  }
+  };
 
   return (
     <div className="App">
@@ -298,7 +317,7 @@ function App() {
           addFriend={addFriend}
           currentUser={auth.currentUser}
           signOut={() => auth.signOut()}
-          getUsers={()=>getUsers()}
+          getUsers={() => getUsers()}
         />
         {user ? (
           <>
@@ -330,16 +349,16 @@ function App() {
   );
 }
 
-const SignIn = (props) => {
+const SignIn = () => {
   const signInWithGoogle = async () => {
     const provider = new firebase.auth.GoogleAuthProvider();
     await auth.signInWithPopup(provider);
     const q = query(
       collection(db, "users"),
-      where("uid", "==", auth.currentUser.uid)
+      where("uid", "===", auth.currentUser.uid)
     );
     const querySnapshot = await getDocs(q);
-    if (querySnapshot.size == 0) {
+    if (querySnapshot.size === 0) {
       await setDoc(doc(userRef, auth.currentUser.uid), {
         uid: auth.currentUser.uid,
         crosswords: [],
