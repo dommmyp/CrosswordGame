@@ -1,0 +1,39 @@
+.crosswordList {
+  margin: 0px 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.subHomePage {
+  display: flex;
+  width: 100vw;
+  height: 500px;
+  overflow: scroll;
+}
+
+.crosswordListWrapper {
+  display: flex;
+  flex-direction: column;
+  overflow: scroll;
+  width: 400px;
+  font-size: 24px;
+}
+
+.homePage {
+  display: flex;
+  padding-top: 100px;
+  margin-top: 120px;
+}
+
+.crosswordListItem {
+  display: inline-block;
+  background-color: var(--pine);
+  padding: 20px;
+  border-radius: 10px;
+  margin: 10px;
+}
+.homepageButton {
+  height: 80px;
+  width: 300px;
+  margin: 20px;
+}

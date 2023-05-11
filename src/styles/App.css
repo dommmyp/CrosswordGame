@@ -1,0 +1,264 @@
+:root {
+  --pine: #3e8fb0;
+  --rose: #ea9a97;
+  --purple-white: #edecf9;
+  --dark: #080816;
+  --light: #ffffff;
+}
+html {
+  background-image: linear-gradient(
+      160deg,
+      rgba(0, 0, 0, 0.92) 40%,
+      rgba(62, 143, 176, 0.95) 130%
+    ),
+    url("../resources/crosswordPic.png");
+  background-size: cover;
+}
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+  overflow-x: hidden;
+}
+* {
+  padding: 0;
+  margin: 0;
+  /* font-family: 'Roboto', sans-serif; */
+  /* font-family: "Barlow Semi Condensed", sans-serif; */
+  font-family: "Inter", sans-serif;
+  font-weight: 300;
+}
+
+.gridInput {
+  height: 100%;
+  width: 40px;
+  background: none;
+  border: none;
+  position: absolute;
+  z-index: 100;
+  font-size: 20px;
+}
+
+.logIn {
+  padding: 100px;
+  font-size: 50px;
+  margin: 200px;
+}
+
+.interface {
+  margin: 10px;
+}
+
+.grid {
+  aspect-ratio: 1/1;
+  width: 500px;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+}
+
+h2 {
+  color: var(--light);
+}
+
+.clueList {
+  width: 300px;
+  height: 450px;
+  margin: 10px;
+  background-color: rgb(216, 211, 229);
+  border: 2px solid rgb(48, 48, 48);
+  border-radius: 10px;
+  overflow: scroll;
+}
+
+.scoreHeader {
+  font-size: 20px;
+  padding: 5px 10px;
+  font-weight: bold;
+  background-color: rgb(171, 193, 184);
+  border-radius: 10px;
+  width: 300px;
+}
+
+.border {
+  width: 100%;
+  height: 100%;
+  z-index: 30;
+  position: absolute;
+}
+
+.active {
+  width: 100%;
+  height: 100%;
+  z-index: 30;
+  position: absolute;
+}
+
+.boxContent {
+  width: 100%;
+  height: 100%;
+  line-height: 100%;
+  z-index: 100;
+  position: absolute;
+  align-items: center;
+  text-align: center;
+}
+
+.clueNum {
+  font-weight: bold;
+  width: 100%;
+  font-size: 10px;
+  z-index: 50;
+  position: absolute;
+}
+
+.clueHeader {
+  font-size: 20px;
+  padding: 5px;
+  font-weight: bold;
+  background-color: rgb(171, 193, 184);
+  border-radius: 10px;
+  width: 290px;
+  margin: 10px;
+}
+
+.crossword {
+  display: flex;
+  margin-top: 100px;
+  color: rgb(48, 48, 48) !important;
+  flex-wrap: wrap;
+}
+
+.sudoku {
+  margin: 100px 0 0 300px;
+}
+
+.sudokuGridItem {
+  flex: 1;
+  position: relative;
+  border: 0.5px solid #0e0e16;
+  font-size: 40px;
+  text-align: center;
+  justify-content: center;
+}
+
+.sudokuGridRow *:nth-child(3n) {
+  box-shadow: inset -3px 0px 0px 0px rgb(48, 48, 48); /* Border bottom */
+}
+.sudokuGridRow:nth-child(3n + 1) * {
+  box-shadow: inset 0px 3px 0px 0px rgb(48, 48, 48); /* Border bottom */
+}
+.sudokuGridRow:nth-child(3n + 1) *:nth-child(3n) {
+  box-shadow: inset -3px 3px 0px 0px rgb(48, 48, 48); /* Border bottom */
+}
+
+button {
+  background-color: var(--pine);
+  color: rgb(48, 48, 48);
+  padding: 15px;
+  box-shadow: none;
+  border: none;
+  border-radius: 100px;
+  margin: 5px;
+  font-size: 24px;
+}
+
+.homepageButton:hover {
+  background-color: #edecf9;
+}
+.navButton:hover {
+  border-bottom: 5px solid var(--light);
+}
+
+.crosswordListItem {
+  border: none;
+  color: rgb(48, 48, 48);
+  text-decoration: none;
+}
+
+h3 {
+  color: rgb(222, 222, 222);
+  display: inline;
+  width: 100%;
+  padding-left: 100px;
+  font-size: 30px;
+  opacity: 0.8;
+}
+
+.clue {
+  font-weight: bold;
+  padding: 5px;
+}
+
+.correct {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 50;
+}
+
+.challenge {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 60;
+}
+
+.userColor {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+.activeLine {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+.gridRow {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+}
+.sudokuGridRow {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+}
+
+.gridItem {
+  flex: 1;
+  position: relative;
+  border: 0.5px solid #0e0e16;
+}
+
+.scores {
+  margin: 10px 0;
+  background-color: rgb(171, 193, 184);
+  width: 300px;
+  height: 300px;
+  padding: 10px;
+  border-radius: 10px;
+}
+button:active {
+  transform: translateY(4px);
+}
+
+.bigTitle {
+  width: 150px;
+  font-size: 64px;
+}
+
+.heroSection {
+  width: 400px;
+  margin: 0 80px;
+}
+
+.heroText {
+  color: var(--light);
+  font-size: 18px;
+}

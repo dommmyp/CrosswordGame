@@ -2,13 +2,12 @@ import { useState, useEffect, useRef, useContext } from "react";
 import CrosswordInterface from "./CrosswordInterface";
 import { FileContext } from "../FileContext";
 import { Link } from "react-router-dom";
-
 const Crossword = (props) => {
   const {
     activeCrossword,
     activeSolution,
-    setActiveCrossword,
     self,
+    setActiveCrossword,
     activeCrosswordInfo,
   } = useContext(FileContext);
   const [active, setActive] = useState([0, 0]);
@@ -369,7 +368,7 @@ const Crossword = (props) => {
       tempHor = !isHorizontal;
       setIsHorizontal(!isHorizontal);
     }
-    if (activeSolution.grid[i][j] != ".") {
+    if (activeSolution.grid[i][j] !== ".") {
       setActive([i, j]);
     }
     let newLine = [];
@@ -377,8 +376,8 @@ const Crossword = (props) => {
     if (tempHor) {
       let a = i;
       let b = j + 1;
-      if (b != activeSolution.grid[0].length) {
-        while (activeSolution.grid[a][b] != ".") {
+      if (b !== activeSolution.grid[0].length) {
+        while (activeSolution.grid[a][b] !== ".") {
           newLine.push([a, b]);
           b++;
           if (b === activeSolution.grid[0].length) {
@@ -388,8 +387,8 @@ const Crossword = (props) => {
       }
       a = i;
       b = j - 1;
-      if (b != -1) {
-        while (activeSolution.grid[a][b] != ".") {
+      if (b !== -1) {
+        while (activeSolution.grid[a][b] !== ".") {
           newLine.push([a, b]);
           b--;
           if (b === -1) {
@@ -400,8 +399,8 @@ const Crossword = (props) => {
     } else {
       let a = i + 1;
       let b = j;
-      if (a != activeSolution.grid.length) {
-        while (activeSolution.grid[a][b] != ".") {
+      if (a !== activeSolution.grid.length) {
+        while (activeSolution.grid[a][b] !== ".") {
           newLine.push([a, b]);
           a++;
           if (a === activeSolution.grid.length) {
@@ -411,8 +410,8 @@ const Crossword = (props) => {
       }
       a = i - 1;
       b = j;
-      if (a != -1) {
-        while (activeSolution.grid[a][b] != ".") {
+      if (a !== -1) {
+        while (activeSolution.grid[a][b] !== ".") {
           newLine.push([a, b]);
           a--;
           if (a === -1) {
@@ -458,8 +457,8 @@ const Crossword = (props) => {
 
   const addChallengeItem = (i, j) => {
     if (
-      activeCrossword[i][j].user != currUser &&
-      activeCrossword[i][j].content != ""
+      activeCrossword[i][j].user !== currUser &&
+      activeCrossword[i][j].content !== ""
     ) {
       activeCrossword[i][j].challenge = !activeCrossword[i][j].challenge;
     }
@@ -480,7 +479,7 @@ const Crossword = (props) => {
   const getClue = (i, j, tempHor) => {
     if (!tempHor) {
       while (true) {
-        if (clueNums[i][j] != "") {
+        if (clueNums[i][j] !== "") {
           if (activeSolution.clues.down[clueNums[i][j]]) {
             setActiveClueNum(clueNums[i][j]);
             return;
@@ -491,7 +490,7 @@ const Crossword = (props) => {
     }
     if (tempHor) {
       while (true) {
-        if (clueNums[i][j] != "") {
+        if (clueNums[i][j] !== "") {
           if (activeSolution.clues.across[clueNums[i][j]]) {
             setActiveClueNum(clueNums[i][j]);
             return;
@@ -522,15 +521,15 @@ const Crossword = (props) => {
                 !isHorizontal &&
                 activeSolution.clues?.down.map((item, index) => {
                   return (
-                    clueNums.length != 0 && (
+                    clueNums.length !== 0 && (
                       <div
                         ref={(el) => (downRef.current[index] = el)}
                         className={"clue"}
                         style={{
                           background:
-                            activeClueNum === index ? "rgb(65,65,65)" : "",
+                            activeClueNum === index ? "rgb(216, 211, 229)" : "",
                           color:
-                            activeClueNum === index ? "rgb(171,193,184)" : "",
+                            activeClueNum === index ? "rgb(216, 211, 229)" : "",
                           display: item ? "block" : "none",
                         }}
                         key={index}
@@ -562,15 +561,14 @@ const Crossword = (props) => {
                 isHorizontal &&
                 activeSolution.clues.across.map((item, index) => {
                   return (
-                    clueNums.length != 0 && (
+                    clueNums.length !== 0 && (
                       <div
                         ref={(el) => (acrossRef.current[index] = el)}
                         className={"clue"}
                         style={{
-                          background:
-                            activeClueNum === index ? "rgb(65,65,65)" : "",
+                          background: activeClueNum === index ? "#0e0e16" : "",
                           color:
-                            activeClueNum === index ? "rgb(171,193,184)" : "",
+                            activeClueNum === index ? "rgb(216, 211, 229)" : "",
                           display: item ? "block" : "none",
                         }}
                         onClick={() => setActiveByClue(index)}
@@ -604,7 +602,7 @@ const Crossword = (props) => {
                           background:
                             activeSolution.grid[i][j] === "."
                               ? "none"
-                              : "rgb(171, 193, 184)",
+                              : "#edecf9",
                         }}
                       >
                         <input
@@ -645,7 +643,7 @@ const Crossword = (props) => {
                             opacity: 0.5,
                           }}
                         ></div>
-                        {clueNums.length != 0 && (
+                        {clueNums.length !== 0 && (
                           <div className="clueNum">{clueNums[i][j]}</div>
                         )}
                         <div
@@ -671,7 +669,7 @@ const Crossword = (props) => {
                               activeCrossword[i][j].user === 0
                                 ? "block"
                                 : "none",
-                            background: "#477e89",
+                            background: "#3E8FB0",
                           }}
                         ></div>
                         <div
@@ -681,7 +679,7 @@ const Crossword = (props) => {
                               activeCrossword[i][j].user === 1
                                 ? "block"
                                 : "none",
-                            background: "#a37774",
+                            background: "#ea9a97",
                           }}
                         ></div>
                         <div

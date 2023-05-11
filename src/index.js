@@ -1,13 +1,17 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import ContextWrapper from './ContextWrapper';
-import reportWebVitals from './reportWebVitals';
+import "./styles/App.css";
+import "./styles/Crossword.css";
+import "./styles/Sudoku.css";
+import "./styles/Profile.css";
+import "./styles/Navbar.css";
+import "./styles/Homepage.css";
+import ReactDOM from "react-dom/client";
+import ContextWrapper from "./ContextWrapper";
+import reportWebVitals from "./reportWebVitals";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   // <React.StrictMode>
-    <ContextWrapper />
+  <ContextWrapper />
   // </React.StrictMode>
 );
 
