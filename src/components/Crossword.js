@@ -18,9 +18,27 @@ const Crossword = (props) => {
   const [scores, setScores] = useState([0, 0]);
   const [challengeActive, setChallengeActive] = useState(false);
   const [activeClueNum, setActiveClueNum] = useState(0);
-
+  const [inputFiller, setInputFiller] = useState("");
+  const [activeAction, setActiveAction] = useState(-1);
   const downRef = useRef([]);
   const acrossRef = useRef([]);
+
+  const [windowSize, setWindowSize] = useState([
+    window.innerWidth,
+    window.innerHeight,
+  ]);
+
+  useEffect(() => {
+    const handleWindowResize = () => {
+      setWindowSize([window.innerWidth, window.innerHeight]);
+    };
+
+    window.addEventListener("resize", handleWindowResize);
+
+    return () => {
+      window.removeEventListener("resize", handleWindowResize);
+    };
+  }, []);
 
   useEffect(() => {
     if (isHorizontal) {
@@ -346,7 +364,8 @@ const Crossword = (props) => {
     setClueNums(tempClueNums);
   }, [activeSolution]);
 
-  const doActive = (i, j, hor) => {
+  const doActive = (i, j, hor, byClue) => {
+    console.log(i, j);
     let tempHor = isHorizontal;
     if (hor) {
       if (hor === 1) {
@@ -364,7 +383,7 @@ const Crossword = (props) => {
     if (activeSolution.grid[i][j] === ".") {
       return;
     }
-    if (active[0] === i && active[1] === j) {
+    if (active[0] === i && active[1] === j && !byClue) {
       tempHor = !isHorizontal;
       setIsHorizontal(!isHorizontal);
     }
@@ -421,6 +440,7 @@ const Crossword = (props) => {
       }
     }
     setActiveLine(newLine);
+    console.log("done");
     getClue(i, j, tempHor);
   };
 
@@ -457,7 +477,7 @@ const Crossword = (props) => {
 
   const addChallengeItem = (i, j) => {
     if (
-      activeCrossword[i][j].user !== currUser &&
+      // activeCrossword[i][j].user !== currUser &&
       activeCrossword[i][j].content !== ""
     ) {
       activeCrossword[i][j].challenge = !activeCrossword[i][j].challenge;
@@ -465,20 +485,22 @@ const Crossword = (props) => {
     setActiveCrossword(activeCrossword.map((x) => x));
   };
 
-  const setActiveByClue = (index) => {
+  const setActiveByClue = (index, isHor) => {
     setActiveClueNum(index);
     for (let i = 0; i < clueNums.length; i++) {
       for (let j = 0; j < clueNums[i].length; j++) {
         if (clueNums[i][j] === index) {
-          doActive(i, j);
+          doActive(i, j, isHor, true);
         }
       }
     }
   };
 
   const getClue = (i, j, tempHor) => {
+    console.log(clueNums[0]);
     if (!tempHor) {
       while (true) {
+        console.log(clueNums[i][j]);
         if (clueNums[i][j] !== "") {
           if (activeSolution.clues.down[clueNums[i][j]]) {
             setActiveClueNum(clueNums[i][j]);
@@ -490,6 +512,7 @@ const Crossword = (props) => {
     }
     if (tempHor) {
       while (true) {
+        console.log(clueNums[i][j]);
         if (clueNums[i][j] !== "") {
           if (activeSolution.clues.across[clueNums[i][j]]) {
             setActiveClueNum(clueNums[i][j]);
@@ -507,213 +530,248 @@ const Crossword = (props) => {
           <h3>
             {activeSolution.info.title} -- {activeSolution.info.author}
           </h3>
-          <div>
-            {!isHorizontal && (
-              <div className="clueHeader" onClick={() => setIsHorizontal(true)}>
-                DOWN
-              </div>
-            )}
-            <div
-              className="clueList"
-              style={{ display: !isHorizontal ? "block" : "none" }}
-            >
-              {activeSolution &&
-                !isHorizontal &&
-                activeSolution.clues?.down.map((item, index) => {
-                  return (
-                    clueNums.length !== 0 && (
-                      <div
-                        ref={(el) => (downRef.current[index] = el)}
-                        className={"clue"}
-                        style={{
-                          background:
-                            activeClueNum === index ? "rgb(216, 211, 229)" : "",
-                          color:
-                            activeClueNum === index ? "rgb(216, 211, 229)" : "",
-                          display: item ? "block" : "none",
-                        }}
-                        key={index}
-                        onClick={() => setActiveByClue(index)}
-                      >
-                        {item && (
-                          <div>
-                            {index}. {item}
-                          </div>
-                        )}
-                      </div>
-                    )
-                  );
-                })}
-            </div>
-            {isHorizontal && (
-              <div
-                className="clueHeader"
-                onClick={() => setIsHorizontal(false)}
-              >
-                ACROSS
-              </div>
-            )}
-            <div
-              className="clueList"
-              style={{ display: isHorizontal ? "block" : "none" }}
-            >
-              {activeSolution &&
-                isHorizontal &&
-                activeSolution.clues.across.map((item, index) => {
-                  return (
-                    clueNums.length !== 0 && (
-                      <div
-                        ref={(el) => (acrossRef.current[index] = el)}
-                        className={"clue"}
-                        style={{
-                          background: activeClueNum === index ? "#0e0e16" : "",
-                          color:
-                            activeClueNum === index ? "rgb(216, 211, 229)" : "",
-                          display: item ? "block" : "none",
-                        }}
-                        onClick={() => setActiveByClue(index)}
-                      >
-                        {item && (
-                          <div>
-                            {index}. {item}
-                          </div>
-                        )}
-                      </div>
-                    )
-                  );
-                })}
-            </div>
+          <div className="actionPanel">
+            <div onClick={() => setActiveAction(0)}>challenge</div>
+            <div onClick={() => setActiveAction(1)}>reveal</div>
+            <div onClick={() => setActiveAction(2)}>hint</div>
           </div>
-          <div className="grid">
-            {activeCrossword.map((row, i) => {
-              return (
-                <div key={i} className={"gridRow"}>
-                  {row.map((item, j) => {
-                    return (
-                      <div
-                        key={j}
-                        onClick={
-                          challengeActive
-                            ? () => addChallengeItem(i, j)
-                            : () => doActive(i, j)
-                        }
-                        className={"gridItem"}
-                        style={{
-                          background:
-                            activeSolution.grid[i][j] === "."
-                              ? "none"
-                              : "#edecf9",
-                        }}
-                      >
-                        <input
-                          className="gridInput"
-                          readOnly
-                          type="text"
-                          value=""
-                        />
+          <div className="innerCrossword">
+            <div className="clueListWrapper">
+              <div className="clueList">
+                <div className="clueHeader">DOWN</div>
+                <div className="innerClueList">
+                  {activeSolution &&
+                    activeSolution.clues?.down.map((item, index) => {
+                      return (
+                        clueNums.length !== 0 && (
+                          <div
+                            ref={(el) => (downRef.current[index] = el)}
+                            className={
+                              activeClueNum === index && !isHorizontal
+                                ? "activeClue"
+                                : "clue"
+                            }
+                            style={{
+                              display: item ? "block" : "none",
+                            }}
+                            key={index}
+                            onClick={() => {
+                              if (windowSize[0] > 600) {
+                                setIsHorizontal(false);
+                                setActiveByClue(index, -1);
+                              }
+                            }}
+                          >
+                            {item && (
+                              <div>
+                                {index}. {item}
+                                <div
+                                  onClick={() => setActiveClueNum(-1)}
+                                  style={{
+                                    display:
+                                      activeClueNum === index &&
+                                      !isHorizontal &&
+                                      windowSize[0] <= 600
+                                        ? "inline"
+                                        : "none",
+                                    float: "right",
+                                    padding: "10px",
+                                  }}
+                                >
+                                  X
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )
+                      );
+                    })}
+                </div>
+              </div>
+              <div className="clueList">
+                <div className="clueHeader">ACROSS</div>
+                <div className="innerClueList">
+                  {activeSolution &&
+                    activeSolution.clues.across.map((item, index) => {
+                      return (
+                        clueNums.length !== 0 && (
+                          <div
+                            ref={(el) => (acrossRef.current[index] = el)}
+                            className={
+                              activeClueNum === index && isHorizontal
+                                ? "activeClue"
+                                : "clue"
+                            }
+                            style={{
+                              display: item ? "block" : "none",
+                            }}
+                            onClick={() => {
+                              if (windowSize[0] > 600) {
+                                setIsHorizontal(true);
+                                setActiveByClue(index, 1);
+                              }
+                            }}
+                          >
+                            {item && (
+                              <div>
+                                {index}. {item}
+                                <div
+                                  onClick={() => setActiveClueNum(-1)}
+                                  style={{
+                                    display:
+                                      activeClueNum === index && isHorizontal
+                                        ? "inline"
+                                        : "none",
+                                    float: "right",
+                                    padding: "10px",
+                                  }}
+                                >
+                                  X
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )
+                      );
+                    })}
+                </div>
+              </div>
+            </div>
+
+            <div className="grid">
+              {activeCrossword.map((row, i) => {
+                return (
+                  <div key={i} className={"gridRow"}>
+                    {row.map((item, j) => {
+                      return (
                         <div
-                          className="active"
+                          key={j}
+                          className={"gridItem"}
                           style={{
                             background:
-                              active[0] === i && active[1] === j
-                                ? "lightgrey"
-                                : "",
-                            zIndex: 400,
-                            opacity: 0.5,
-                          }}
-                        ></div>
-                        <div
-                          className="boxContent"
-                          style={{
-                            fontSize:
-                              activeSolution.grid.length > 15 ? "20px" : "30px",
+                              activeSolution.grid[i][j] === "."
+                                ? "none"
+                                : "#edecf9",
                           }}
                         >
-                          {item.content}
+                          <input
+                            className="gridInput"
+                            type="text"
+                            value={inputFiller}
+                            onClick={
+                              challengeActive
+                                ? () => addChallengeItem(i, j)
+                                : () => doActive(i, j)
+                            }
+                          />
+                          <div
+                            className="active"
+                            style={{
+                              background:
+                                active[0] === i && active[1] === j
+                                  ? "lightgrey"
+                                  : "",
+                              zIndex: 400,
+                              opacity: 0.5,
+                            }}
+                          ></div>
+                          <div
+                            className="boxContent"
+                            style={{
+                              fontSize:
+                                activeSolution.grid.length > 15
+                                  ? "20px"
+                                  : "30px",
+                            }}
+                          >
+                            {item.content}
+                          </div>
+                          <div
+                            className="activeLine"
+                            style={{
+                              background: activeLine.some(
+                                (k) => k[0] === i && k[1] === j
+                              )
+                                ? "grey"
+                                : "",
+                              zIndex: 5,
+                              opacity: 0.5,
+                            }}
+                          ></div>
+                          {clueNums.length !== 0 && (
+                            <div className="clueNum">{clueNums[i][j]}</div>
+                          )}
+                          <div
+                            className="correct"
+                            style={{
+                              boxShadow: activeCrossword[i][j].confirmed
+                                ? "0 0 0 2px lightgreen inset"
+                                : "",
+                            }}
+                          ></div>
+                          <div
+                            className="challenge"
+                            style={{
+                              boxShadow: activeCrossword[i][j].challenge
+                                ? "0 0 0 3px pink inset"
+                                : "",
+                            }}
+                          ></div>
+                          <div
+                            className="userColor"
+                            style={{
+                              display:
+                                activeCrossword[i][j].user === 0
+                                  ? "block"
+                                  : "none",
+                              background: "#3E8FB0",
+                            }}
+                          ></div>
+                          <div
+                            className="userColor"
+                            style={{
+                              display:
+                                activeCrossword[i][j].user === 1
+                                  ? "block"
+                                  : "none",
+                              background: "#ea9a97",
+                            }}
+                          ></div>
+                          <div
+                            className="userColor"
+                            style={{
+                              display:
+                                activeCrossword[i][j].user === 2
+                                  ? "block"
+                                  : "none",
+                              background: "#83819f",
+                            }}
+                          ></div>
+                          <div
+                            className="userColor"
+                            style={{
+                              display:
+                                activeCrossword[i][j].user === 3
+                                  ? "block"
+                                  : "none",
+                              background: "#bfac80",
+                            }}
+                          ></div>
                         </div>
-                        <div
-                          className="activeLine"
-                          style={{
-                            background: activeLine.some(
-                              (k) => k[0] === i && k[1] === j
-                            )
-                              ? "grey"
-                              : "",
-                            zIndex: 5,
-                            opacity: 0.5,
-                          }}
-                        ></div>
-                        {clueNums.length !== 0 && (
-                          <div className="clueNum">{clueNums[i][j]}</div>
-                        )}
-                        <div
-                          className="correct"
-                          style={{
-                            boxShadow: activeCrossword[i][j].confirmed
-                              ? "0 0 0 2px lightgreen inset"
-                              : "",
-                          }}
-                        ></div>
-                        <div
-                          className="challenge"
-                          style={{
-                            boxShadow: activeCrossword[i][j].challenge
-                              ? "0 0 0 3px pink inset"
-                              : "",
-                          }}
-                        ></div>
-                        <div
-                          className="userColor"
-                          style={{
-                            display:
-                              activeCrossword[i][j].user === 0
-                                ? "block"
-                                : "none",
-                            background: "#3E8FB0",
-                          }}
-                        ></div>
-                        <div
-                          className="userColor"
-                          style={{
-                            display:
-                              activeCrossword[i][j].user === 1
-                                ? "block"
-                                : "none",
-                            background: "#ea9a97",
-                          }}
-                        ></div>
-                        <div
-                          className="userColor"
-                          style={{
-                            display:
-                              activeCrossword[i][j].user === 2
-                                ? "block"
-                                : "none",
-                            background: "#83819f",
-                          }}
-                        ></div>
-                        <div
-                          className="userColor"
-                          style={{
-                            display:
-                              activeCrossword[i][j].user === 3
-                                ? "block"
-                                : "none",
-                            background: "#bfac80",
-                          }}
-                        ></div>
-                      </div>
-                    );
-                  })}
-                </div>
-              );
-            })}
+                      );
+                    })}
+                  </div>
+                );
+              })}
+            </div>
+            <CrosswordInterface
+              challenge={challenge}
+              submitChallenge={submitChallenge}
+              challengeActive={challengeActive}
+              activeAction={activeAction}
+              hideActionPanel={() => setActiveAction(-1)}
+            />
           </div>
-          <CrosswordInterface
-            challenge={challenge}
-            submitChallenge={submitChallenge}
-            challengeActive={challengeActive}
-          />
         </div>
       ) : (
         <Link to="/" className="noCrosswordLink">

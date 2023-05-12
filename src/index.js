@@ -1,4 +1,5 @@
 import "./styles/App.css";
+import "./styles/CrosswordInterface.css";
 import "./styles/Crossword.css";
 import "./styles/Sudoku.css";
 import "./styles/Profile.css";

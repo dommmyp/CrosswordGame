@@ -56,6 +56,7 @@ function App() {
   const [crosswords, setCrosswords] = useState([]);
   const [user] = useAuthState(auth);
   const [showProfile, setShowProfile] = useState(false);
+  const [isHome, setIsHome] = useState(true);
   useEffect(() => {
     getCrosswordData();
   }, []);
@@ -354,7 +355,7 @@ const SignIn = () => {
     await auth.signInWithPopup(provider);
     const q = query(
       collection(db, "users"),
-      where("uid", "===", auth.currentUser.uid)
+      where("uid", "==", auth.currentUser.uid)
     );
     const querySnapshot = await getDocs(q);
     if (querySnapshot.size === 0) {

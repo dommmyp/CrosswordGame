@@ -6,13 +6,11 @@ const CrosswordInterface = (props) => {
 
   return (
     <div className="interface">
-      <div className="scoreHeader">SCORES</div>
       <div className="scores">
         <div
           style={{
             fontSize: "30px",
             fontWeight: "bold",
-            display: activeCrosswordInfo.scores[0] != 0 ? "block" : "none",
           }}
         >
           Player 1:
@@ -61,13 +59,23 @@ const CrosswordInterface = (props) => {
           <div className='bar' style={{width: activeCrosswordInfo.scores[1] + '%', background: "rgb(90, 159, 189)"}}></div>
         </div> */}
       </div>
-      {!props.challengeActive ? (
-        <button onClick={() => props.challenge()}>Challenge</button>
-      ) : (
-        <button onClick={() => props.submitChallenge()}>
-          Submit Challenge
-        </button>
-      )}
+      <div className="actions">
+        {props.activeAction === 0 && (
+          <div>
+            <button
+              onClick={() => {
+                props.submitChallenge();
+                props.hideActionPanel();
+              }}
+            >
+              Submit Challenge
+            </button>
+          </div>
+        )}
+
+        {props.activeAction === 1 && <div>reveal</div>}
+        {props.activeAction === 2 && <div>hint</div>}
+      </div>
     </div>
   );
 };
