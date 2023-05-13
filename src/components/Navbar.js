@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
+import logo from "../resources/H2Hlogo.png";
 import { FaBars } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
 import { useEffect, useState, useRef } from "react";
@@ -25,7 +26,13 @@ const Navbar = (props) => {
   }, []);
   return (
     <div className="navbar">
-      <Link className="title" to="/"></Link>
+      <Link
+        className="title"
+        onClick={() => props.setShowProfile(false)}
+        to="/"
+      >
+        <img src={logo} alt="hello" />
+      </Link>
       {window.location.pathname === "/" && (
         <>
           <Link
@@ -57,7 +64,10 @@ const Navbar = (props) => {
           </Link>
           {windowSize[0] < 600 ? (
             <div
-              onClick={() => props.setShowProfile(!props.showProfile)}
+              onClick={() => {
+                setShowMenu(false);
+                props.setShowProfile(!props.showProfile);
+              }}
               style={{
                 display: windowSize[0] < 600 && !showMenu ? "none" : "block",
               }}

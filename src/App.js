@@ -139,6 +139,7 @@ function App() {
       pid: pid,
       userNum: 0,
     });
+
     setSelf(userData);
     let currNum = 0;
     players[currNum++] = {
@@ -154,77 +155,84 @@ function App() {
       pendingGames: userData.pendingGames,
       friends: userData.friends,
     });
+    const a = new Promise((resolve) => {
+      opponentIDs.forEach(async (oppID) => {
+        console.log(oppID);
+        const oppDoc = doc(db, "users", oppID);
+        const docSnapOpp = await getDoc(oppDoc);
+        const oppData = docSnapOpp.data();
+        oppData.crosswords.push({
+          gameID: gameID,
+          name: crosswords[index].content.info.title,
+          pid: pid,
+          userNum: currNum++,
+        });
+        await setDoc(doc(userRef, oppID), {
+          uid: oppData.uid,
+          crosswords: oppData.crosswords,
+          email: oppData.email,
+          name: oppData.name,
+          pendingGames: oppData.pendingGames,
+          friends: oppData.friends,
+        });
+        players.push({
+          uid: oppData.uid,
+          email: oppData.email,
+          name: oppData.name,
+        });
+      });
+      resolve(players);
+    });
 
-    await opponentIDs.forEach(async (oppID) => {
-      const oppDoc = doc(db, "users", oppID);
-      const docSnapOpp = await getDoc(oppDoc);
-      const oppData = docSnapOpp.data();
-      oppData.crosswords.push({
-        gameID: gameID,
-        name: crosswords[index].content.info.title,
+    a.then((players) => {
+      const emptyCross = [];
+      const arr = [];
+      for (let i = 0; i < crosswords[index].content.grid.length; i++) {
+        emptyCross[i] = {};
+        arr[i] = [];
+        for (let j = 0; j < crosswords[index].content.grid[0].length; j++) {
+          arr[i][j] = {
+            user: -1,
+            content: "",
+            confirmed: false,
+            challenge: false,
+          };
+        }
+        emptyCross[i].x = arr[i];
+      }
+      console.log(players);
+      setDoc(doc(crosswordsRef, gameID), {
+        grid: emptyCross,
         pid: pid,
-        userNum: currNum++,
+        gameID: gameID,
+        scores: [0, 0, 0, 0],
+        players: players,
       });
-      await setDoc(doc(userRef, oppID), {
-        uid: oppData.uid,
-        crosswords: oppData.crosswords,
-        email: oppData.email,
-        name: oppData.name,
-        pendingGames: oppData.pendingGames,
-        friends: oppData.friends,
-      });
-      players[currNum++] = {
-        uid: oppData.uid,
-        email: oppData.email,
-        name: oppData.name,
-      };
-    });
+      setActiveCrossword(arr);
 
-    const emptyCross = [];
-    const arr = [];
-    for (let i = 0; i < crosswords[index].content.grid.length; i++) {
-      emptyCross[i] = {};
-      arr[i] = [];
-      for (let j = 0; j < crosswords[index].content.grid[0].length; j++) {
-        arr[i][j] = {
-          user: -1,
-          content: "",
-          confirmed: false,
-          challenge: false,
-        };
-      }
-      emptyCross[i].x = arr[i];
-    }
-    await setDoc(doc(crosswordsRef, gameID), {
-      grid: emptyCross,
-      pid: pid,
-      gameID: gameID,
-      scores: [0, 0, 0, 0],
-      players: players,
-    });
-    setActiveCrossword(arr);
-
-    onSnapshot(doc(db, "crosswords", gameID), (doc) => {
-      const content = doc.data();
-      const newArr = [];
-      for (let i = 0; i < content.grid.length; i++) {
-        newArr[i] = content.grid[i].x;
-      }
-      setActiveCrossword(newArr);
+      // onSnapshot(doc(db, "crosswords", gameID), (doc) => {
+      //   const content = doc.data();
+      //   const newArr = [];
+      //   for (let i = 0; i < content.grid.length; i++) {
+      //     newArr[i] = content.grid[i].x;
+      //   }
+      //   setActiveCrossword(newArr);
+      //   setActiveCrosswordInfo({
+      //     pid: content.pid,
+      //     gameID: content.gameID,
+      //     scores: content.scores,
+      //     players: content.players,
+      //   });
+      //   console.log(content.players);
+      // });
       setActiveCrosswordInfo({
-        pid: content.pid,
-        gameID: content.gameID,
-        scores: content.scores,
-        players: content.players,
+        pid: pid,
+        gameID: gameID,
+        scores: [0, 0, 0, 0],
+        players: players,
       });
+      setActiveSolution(crosswords[index].content);
     });
-    setActiveCrosswordInfo({
-      pid: pid,
-      gameID: gameID,
-      scores: [0, 0, 0, 0],
-      players: players,
-    });
-    setActiveSolution(crosswords[index].content);
   };
 
   const updateCrossword = async () => {
@@ -278,19 +286,34 @@ function App() {
     return friendsData;
   };
 
+  const removeFriend = async (friend) => {
+    const newFriends = self.friends;
+    const filter = newFriends.map((item, index) => {
+      if (item.uid === friend.uid) {
+        delete newFriends[index];
+        return true;
+      }
+      return false;
+    });
+    await setDoc(doc(userRef, self.uid), {
+      uid: self.uid,
+      crosswords: self.crosswords,
+      email: self.email,
+      name: self.name,
+      pendingGames: self.pendingGames,
+      friends: newFriends,
+    });
+  };
+
   const addFriend = async (friend) => {
     const newFriends = self.friends;
-    console.log(friend);
-    console.log(newFriends);
     const filter = newFriends.filter((item) => {
       return item.uid === friend.uid;
     });
     if (filter.length !== 0) {
-      console.log("same");
       return;
     }
     if (friend.uid === self.uid) {
-      console.log("self");
       return;
     }
     newFriends.push({
@@ -314,6 +337,8 @@ function App() {
         <Navbar setShowProfile={setShowProfile} showProfile={showProfile} />
         <Profile
           show={showProfile}
+          setShowProfile={setShowProfile}
+          removeFriend={removeFriend}
           addFriend={addFriend}
           currentUser={auth.currentUser}
           signOut={() => auth.signOut()}
@@ -337,7 +362,7 @@ function App() {
                 element={<Crossword updateCrossword={updateCrossword} />}
               />
               <Route path="/sudoku" element={<Sudoku />} />
-              <Route path="/minesweeper" element={<Minesweeper />} />
+              <Route path="/wordhunt" element={<Minesweeper />} />
               <Route path="*" element={<NoPage />} />
             </Routes>
           </>

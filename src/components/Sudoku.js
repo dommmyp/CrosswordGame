@@ -20,6 +20,7 @@ const Sudoku = () => {
   return (
     <div>
       <div className="sudoku">
+        <h2>Sike u thought</h2>
         {sudokuSolution && (
           <div className="grid">
             {sudokuSolution.map((row, i) => {

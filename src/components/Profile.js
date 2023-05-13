@@ -16,6 +16,10 @@ const Profile = (props) => {
     await props.addFriend(friend);
     showFriends();
   };
+  const removeFriend = async (friend) => {
+    await props.removeFriend(friend);
+    showFriends();
+  };
 
   return (
     <div>
@@ -23,7 +27,7 @@ const Profile = (props) => {
         <div
           className={
             props.show
-              ? "profilePage profileFullWidth"
+              ? "profilePage profileFullHeight"
               : "profilePage profileHide"
           }
           style={{ width: props.show ? "block" : "none" }}
@@ -32,7 +36,7 @@ const Profile = (props) => {
             <div
               onClick={() => setProfileState("self")}
               className={
-                profileState == "self"
+                profileState === "self"
                   ? "profileNavItemActive"
                   : "profileNavItem"
               }
@@ -47,30 +51,29 @@ const Profile = (props) => {
                   : "profileNavItem"
               }
             >
-              view
+              friends
             </div>
             <div
               onClick={() => setProfileState("addFriends")}
               className={
-                profileState == "addFriends"
+                profileState === "addFriends"
                   ? "profileNavItemActive"
                   : "profileNavItem"
               }
             >
               add
             </div>
+            <div
+              className="closeButton"
+              onClick={() => props.setShowProfile(false)}
+            >
+              x
+            </div>
           </div>
           <div
             className="profileSection"
-            style={{ display: profileState == "self" ? "block" : "none" }}
+            style={{ display: profileState === "self" ? "block" : "none" }}
           >
-            <button
-              onClick={() => {
-                console.log(self.friends);
-              }}
-            >
-              asd
-            </button>
             <div>{self.name}</div>
             <div>{self.email}</div>
             <div>{self.uid}</div>
@@ -78,28 +81,46 @@ const Profile = (props) => {
           <div
             className="profileSection"
             style={{
-              display: profileState == "showFriends" ? "block" : "none",
+              display: profileState === "showFriends" ? "block" : "none",
             }}
           >
             {self.friends &&
               self.friends.map((item) => {
-                return <div>{item.name}</div>;
+                return (
+                  <div className="friendItem">
+                    {item.name}
+                    <button
+                      onClick={() => removeFriend(item)}
+                      className="friendButton"
+                    >
+                      -
+                    </button>
+                  </div>
+                );
               })}
           </div>
           <div
             className="profileSection"
-            style={{ display: profileState == "addFriends" ? "block" : "none" }}
+            style={{
+              display: profileState === "addFriends" ? "block" : "none",
+            }}
           >
             <div className="friendsProfile">
               <div>Add Friends</div>
               <input className="friendSearch" type="text" />
               <button onClick={() => showFriends()}>search</button>
+              <br />
               {friendsData &&
                 friendsData.map((item, index) => {
                   return (
                     <div className="friendItem" key={index}>
                       <div>{item.email}</div>
-                      <button onClick={() => addFriend(item)}>+</button>
+                      <button
+                        onClick={() => addFriend(item)}
+                        className="friendButton"
+                      >
+                        +
+                      </button>
                     </div>
                   );
                 })}
@@ -108,7 +129,7 @@ const Profile = (props) => {
 
           {props.currentUser && (
             <button
-              style={{ bottom: "0", right: "0", position: "absolute" }}
+              style={{ bottom: "20px", right: "20px", position: "absolute" }}
               onClick={() => {
                 props.signOut();
                 setSelf(null);

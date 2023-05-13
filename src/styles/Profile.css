@@ -1,24 +1,23 @@
-.profileFullWidth {
-  right: 0px;
+.profileFullHeight {
 }
 
 .profPic {
   font-size: 40px;
-  color: rgb(171, 193, 184);
 }
 .profileHide {
-  right: -400px;
+  display: none;
 }
 .profilePage {
-  width: 400px;
-  position: fixed;
-  transition: right 500ms;
   bottom: 0;
-  top: 75px;
+  top: 0;
+  right: 0px;
+  width: min(100vw, 600px);
+  position: fixed;
+  transition: display 900ms;
   z-index: 60;
-  background-color: rgb(48, 48, 48);
+  background-color: var(--dark);
   opacity: 0.95;
-  color: rgb(222, 222, 222);
+  color: var(--light);
   font-size: 24px;
 }
 
@@ -36,8 +35,8 @@
   text-align: center;
   justify-content: center;
   /* border: 1px solid rgb(222, 222, 222); */
-  color: rgb(65, 65, 65);
-  background-color: rgb(171, 193, 184);
+  color: var(--dark);
+  background-color: var(--pine);
   flex: 1;
   border-radius: 5px;
   padding: 5px;
@@ -46,8 +45,8 @@
 .profileNavItem {
   text-align: center;
   justify-content: center;
-  border: 1px solid rgb(65, 65, 65);
-  color: rgb(171, 193, 184);
+  border: 1px solid var(--dark);
+  color: var(--light);
   flex: 1;
   border-radius: 5px;
   padding: 5px;
@@ -55,11 +54,43 @@
 
 .friendSearch {
   height: 30px;
-  width: 200px;
+  width: 50%;
+  margin: 0 20px;
   padding: 2px;
   font-weight: bold;
   border-radius: 5px;
-  background-color: rgb(171, 193, 184);
+  background-color: var(--pine);
   font-size: 24px;
   color: rgb(65, 65, 65);
+}
+.closeButton {
+  padding: 5px;
+  color: var(--pine);
+  margin: 0 10px;
+}
+.friendItem {
+  background: var(--pine);
+  padding: 20px;
+  margin: 10px 0;
+  border-radius: 10px;
+  line-height: 100%;
+  align-items: center;
+}
+.friendButton {
+  color: var(--pine);
+  background: var(--light);
+  right: 20px;
+  height: 40px;
+  position: absolute;
+  width: 40px;
+  border-radius: 15px;
+  padding: 0;
+}
+.profileSection {
+  padding: 10px;
+}
+@media screen and (max-width: 600px) {
+  .profileFullHeight {
+    height: calc(100vh - 80px);
+  }
 }

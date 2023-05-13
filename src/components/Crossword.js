@@ -17,6 +17,7 @@ const Crossword = (props) => {
   const [currUser, setCurrUser] = useState(0);
   const [scores, setScores] = useState([0, 0]);
   const [challengeActive, setChallengeActive] = useState(false);
+  const [revealActive, setRevealActive] = useState(false);
   const [activeClueNum, setActiveClueNum] = useState(0);
   const [inputFiller, setInputFiller] = useState("");
   const [activeAction, setActiveAction] = useState(-1);
@@ -448,6 +449,34 @@ const Crossword = (props) => {
     setChallengeActive(true);
   };
 
+  const submitReveal = () => {
+    setRevealActive(false);
+    for (let i = 0; i < activeCrossword.length; i++) {
+      for (let j = 0; j < activeCrossword[0].length; j++) {
+        if (!activeCrossword[i][j].challenge) {
+          continue;
+        }
+
+        activeCrossword[i][j].confirmed = true;
+        activeCrosswordInfo.scores[currUser]--;
+        if (
+          activeCrossword[i][j].content ===
+          activeSolution.grid[i][j].toLowerCase()
+        ) {
+          activeCrosswordInfo.scores[activeCrossword[i][j].user]++;
+        } else {
+          activeCrossword[i][j].content =
+            activeSolution.grid[i][j].toLowerCase();
+          activeCrosswordInfo.scores[activeCrossword[i][j].user]--;
+          activeCrossword[i][j].user = currUser;
+        }
+        activeCrossword[i][j].challenge = false;
+      }
+    }
+    props.updateCrossword();
+    setScores(scores.map((x) => x));
+  };
+
   const submitChallenge = () => {
     setChallengeActive(false);
     for (let i = 0; i < activeCrossword.length; i++) {
@@ -478,7 +507,8 @@ const Crossword = (props) => {
   const addChallengeItem = (i, j) => {
     if (
       // activeCrossword[i][j].user !== currUser &&
-      activeCrossword[i][j].content !== ""
+      activeCrossword[i][j].content !== "" ||
+      revealActive
     ) {
       activeCrossword[i][j].challenge = !activeCrossword[i][j].challenge;
     }
@@ -531,9 +561,32 @@ const Crossword = (props) => {
             {activeSolution.info.title} -- {activeSolution.info.author}
           </h3>
           <div className="actionPanel">
-            <div onClick={() => setActiveAction(0)}>challenge</div>
-            <div onClick={() => setActiveAction(1)}>reveal</div>
-            <div onClick={() => setActiveAction(2)}>hint</div>
+            <div
+              style={{ zIndex: activeClueNum < 1 && 10000 }}
+              onClick={() => {
+                setChallengeActive(true);
+                setRevealActive(false);
+                setActiveAction(0);
+              }}
+            >
+              challenge
+            </div>
+            <div
+              style={{ zIndex: activeClueNum < 1 && 10000 }}
+              onClick={() => {
+                setRevealActive(true);
+                setChallengeActive(false);
+                setActiveAction(1);
+              }}
+            >
+              reveal
+            </div>
+            <div
+              style={{ zIndex: activeClueNum < 1 && 10000 }}
+              onClick={() => setActiveAction(2)}
+            >
+              hint
+            </div>
           </div>
           <div className="innerCrossword">
             <div className="clueListWrapper">
@@ -552,7 +605,7 @@ const Crossword = (props) => {
                                 : "clue"
                             }
                             style={{
-                              display: item ? "block" : "none",
+                              display: item ? "flex" : "none",
                             }}
                             key={index}
                             onClick={() => {
@@ -563,8 +616,10 @@ const Crossword = (props) => {
                             }}
                           >
                             {item && (
-                              <div>
-                                {index}. {item}
+                              <>
+                                <div className="clueText">
+                                  {index}. {item}
+                                </div>
                                 <div
                                   onClick={() => setActiveClueNum(-1)}
                                   style={{
@@ -580,7 +635,7 @@ const Crossword = (props) => {
                                 >
                                   X
                                 </div>
-                              </div>
+                              </>
                             )}
                           </div>
                         )
@@ -603,7 +658,7 @@ const Crossword = (props) => {
                                 : "clue"
                             }
                             style={{
-                              display: item ? "block" : "none",
+                              display: item ? "flex" : "none",
                             }}
                             onClick={() => {
                               if (windowSize[0] > 600) {
@@ -613,22 +668,27 @@ const Crossword = (props) => {
                             }}
                           >
                             {item && (
-                              <div>
-                                {index}. {item}
+                              <>
+                                <div className="clueText">
+                                  {index}. {item}
+                                </div>
                                 <div
                                   onClick={() => setActiveClueNum(-1)}
                                   style={{
                                     display:
-                                      activeClueNum === index && isHorizontal
+                                      activeClueNum === index &&
+                                      isHorizontal &&
+                                      windowSize[0] <= 600
                                         ? "inline"
                                         : "none",
                                     float: "right",
                                     padding: "10px",
+                                    zIndex: 1,
                                   }}
                                 >
                                   X
                                 </div>
-                              </div>
+                              </>
                             )}
                           </div>
                         )
@@ -659,7 +719,7 @@ const Crossword = (props) => {
                             type="text"
                             value={inputFiller}
                             onClick={
-                              challengeActive
+                              challengeActive || revealActive
                                 ? () => addChallengeItem(i, j)
                                 : () => doActive(i, j)
                             }
@@ -669,10 +729,8 @@ const Crossword = (props) => {
                             style={{
                               background:
                                 active[0] === i && active[1] === j
-                                  ? "lightgrey"
+                                  ? "#444444"
                                   : "",
-                              zIndex: 400,
-                              opacity: 0.5,
                             }}
                           ></div>
                           <div
@@ -680,8 +738,12 @@ const Crossword = (props) => {
                             style={{
                               fontSize:
                                 activeSolution.grid.length > 15
-                                  ? "20px"
-                                  : "30px",
+                                  ? "min(5vw, 20px)"
+                                  : "min(6vw, 30px)",
+                              color:
+                                active[0] === i && active[1] === j
+                                  ? "#ea9a97"
+                                  : "",
                             }}
                           >
                             {item.content}
@@ -692,7 +754,7 @@ const Crossword = (props) => {
                               background: activeLine.some(
                                 (k) => k[0] === i && k[1] === j
                               )
-                                ? "grey"
+                                ? "#ea9a97"
                                 : "",
                               zIndex: 5,
                               opacity: 0.5,
@@ -765,9 +827,8 @@ const Crossword = (props) => {
               })}
             </div>
             <CrosswordInterface
-              challenge={challenge}
               submitChallenge={submitChallenge}
-              challengeActive={challengeActive}
+              submitReveal={submitReveal}
               activeAction={activeAction}
               hideActionPanel={() => setActiveAction(-1)}
             />

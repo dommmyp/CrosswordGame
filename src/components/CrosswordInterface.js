@@ -7,21 +7,16 @@ const CrosswordInterface = (props) => {
   return (
     <div className="interface">
       <div className="scores">
-        <div
-          style={{
-            fontSize: "30px",
-            fontWeight: "bold",
-          }}
-        >
+        <div className="actionTitle">Scores</div>
+        <div className="scoreItem">
           Player 1:
           <div style={{ color: "rgb(121, 13, 63)" }}>
             {activeCrosswordInfo.scores[0]}
           </div>
         </div>
         <div
+          className="scoreItem"
           style={{
-            fontSize: "30px",
-            fontWeight: "bold",
             display: activeCrosswordInfo.scores[1] != 0 ? "block" : "none",
           }}
         >
@@ -31,9 +26,8 @@ const CrosswordInterface = (props) => {
           </div>
         </div>
         <div
+          className="scoreItem"
           style={{
-            fontSize: "30px",
-            fontWeight: "bold",
             display: activeCrosswordInfo.scores[2] != 0 ? "block" : "none",
           }}
         >
@@ -43,9 +37,8 @@ const CrosswordInterface = (props) => {
           </div>
         </div>
         <div
+          className="scoreItem"
           style={{
-            fontSize: "30px",
-            fontWeight: "bold",
             display: activeCrosswordInfo.scores[3] != 0 ? "block" : "none",
           }}
         >
@@ -54,27 +47,51 @@ const CrosswordInterface = (props) => {
             {activeCrosswordInfo.scores[3]}
           </div>
         </div>
-        {/* <div className='graph'>
-          <div className='bar' style={{width: activeCrosswordInfo.scores[0]+ '%', background: 'rgb(171, 63, 113)'}}></div>
-          <div className='bar' style={{width: activeCrosswordInfo.scores[1] + '%', background: "rgb(90, 159, 189)"}}></div>
-        </div> */}
       </div>
       <div className="actions">
         {props.activeAction === 0 && (
-          <div>
-            <button
-              onClick={() => {
-                props.submitChallenge();
-                props.hideActionPanel();
-              }}
-            >
-              Submit Challenge
-            </button>
-          </div>
+          <>
+            <div className="actionTitle">Challenge</div>
+            <div className="actionContent">
+              <div>Select boxes to challenge</div>
+              <button
+                onClick={() => {
+                  props.submitChallenge();
+                  props.hideActionPanel();
+                }}
+                className="actionButton"
+              >
+                Submit Challenge
+              </button>
+            </div>
+          </>
         )}
 
-        {props.activeAction === 1 && <div>reveal</div>}
-        {props.activeAction === 2 && <div>hint</div>}
+        {props.activeAction === 1 && (
+          <>
+            <div className="actionTitle">Reveal</div>
+            <div className="actionContent">
+              <div>Select boxes to reveal</div>
+              <button
+                className="actionButton"
+                onClick={() => {
+                  props.submitReveal();
+                  props.hideActionPanel();
+                }}
+              >
+                Submit Reveal
+              </button>
+            </div>
+          </>
+        )}
+        {props.activeAction === 2 && (
+          <>
+            <div className="actionTitle">Hint</div>
+            <div className="actionContent">
+              <div>Hint not yet implemented</div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

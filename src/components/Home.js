@@ -40,7 +40,7 @@ const Home = (props) => {
     } else {
       setOpponents(
         opponents.filter((item) => {
-          return item != uid;
+          return item !== uid;
         })
       );
     }
@@ -73,8 +73,20 @@ const Home = (props) => {
       </div>
       <div className="subHomePage">
         <div className="crosswordList" style={{ overflow: "hidden" }}>
-          {hasMyCrosswords && <div className="myCrosswords"></div>}
           <div className="crosswordListWrapper">
+            {(startBattle || cont) && (
+              <button
+                className="homepageButton "
+                style={{ margin: "10px", borderRadius: "80px" }}
+                onClick={() => {
+                  setStartBattle(false);
+                  setCont(false);
+                  setOpponentsReady(false);
+                }}
+              >
+                cancel
+              </button>
+            )}
             {startBattle && !opponentsReady && friendsList && (
               <>
                 {self.friends.map((item, index) => {

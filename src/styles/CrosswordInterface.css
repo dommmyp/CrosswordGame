@@ -1,16 +1,43 @@
 .scores {
   margin: 10px 0;
   background-color: var(--purple-white);
-  height: 250px;
-  padding: 10px;
+  height: 270px;
   border-radius: 10px;
+  overflow: hidden;
 }
 .actions {
   margin: 10px 0;
   background-color: var(--purple-white);
-  height: 200px;
-  padding: 10px;
+  height: 220px;
   border-radius: 10px;
+  overflow: hidden;
+}
+.actionContent {
+  padding: 10px;
+  bottom: 0;
+  position: relative;
+  text-align: center;
+}
+.actionButton {
+  font-size: 20px;
+  bottom: 0;
+  padding: 10px;
+  position: relative;
+}
+.actionTitle {
+  border-bottom: 2px solid var(--dark);
+  padding: 5px;
+  font-size: 24px;
+  background: var(--rose);
+}
+.scoreItem {
+  font-size: 20px;
+  display: inline;
+  margin: 5px;
+}
+.scoreItem * {
+  display: inline;
+  margin-left: 10px;
 }
 .interface {
   margin: 0 10px;
@@ -50,12 +77,18 @@
     width: 50%;
     margin: 0;
     border-radius: 10px 0 0 10px;
-    height: 250px;
+    height: calc(100vh - min(400px, 100vw) - 80px);
   }
   .scores {
     width: 50%;
     margin: 0;
     border-radius: 0 10px 10px 0;
-    height: 250px;
+    height: calc(100vh - min(400px, 100vw) - 80px);
+  }
+  .actionPanel {
+    top: 5px;
+    right: 15px;
+    position: fixed;
+    width: calc(100% - 100px) !important;
   }
 }

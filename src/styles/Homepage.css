@@ -12,8 +12,9 @@
 .subHomePage {
   display: flex;
   width: 100vw;
-  height: 500px;
+  height: calc(100vh - 220px);
   overflow: scroll;
+  justify-content: center;
 }
 
 .crosswordListWrapper {
@@ -26,6 +27,7 @@
 
 .homePage {
   margin-top: 220px;
+  display: flex;
 }
 
 .crosswordListItem {
@@ -54,6 +56,10 @@
   .homePage {
     margin-top: 20px !important;
     width: 100%;
+    flex-direction: column;
+  }
+  .subHomePage {
+    height: calc(100vh - 310px);
   }
   .heroText {
     max-width: 350px;
