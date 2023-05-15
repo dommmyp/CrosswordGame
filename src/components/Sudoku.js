@@ -14,7 +14,6 @@ const Sudoku = () => {
     );
     const jsonData = await response.json();
     setSudokuSolution(jsonData.board);
-    console.log(jsonData.board);
   };
 
   return (

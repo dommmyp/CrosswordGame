@@ -1,6 +1,3 @@
-.profileFullHeight {
-}
-
 .profPic {
   font-size: 40px;
 }
@@ -16,7 +13,6 @@
   transition: display 900ms;
   z-index: 60;
   background-color: var(--dark);
-  opacity: 0.95;
   color: var(--light);
   font-size: 24px;
 }
@@ -92,5 +88,7 @@
 @media screen and (max-width: 600px) {
   .profileFullHeight {
     height: calc(100vh - 80px);
+    bottom: 0;
+    margin-top: 80px;
   }
 }

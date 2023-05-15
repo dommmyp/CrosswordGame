@@ -26,11 +26,7 @@ const Navbar = (props) => {
   }, []);
   return (
     <div className="navbar">
-      <Link
-        className="title"
-        onClick={() => props.setShowProfile(false)}
-        to="/"
-      >
+      <Link className="title" onClick={() => props.reset()} to="/">
         <img src={logo} alt="hello" />
       </Link>
       {window.location.pathname === "/" && (

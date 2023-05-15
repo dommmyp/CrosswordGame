@@ -5,6 +5,48 @@
   border-radius: 10px;
   overflow: hidden;
 }
+.modal {
+  position: absolute;
+  width: min(90vw, 400px);
+  height: min(90vh, 800px);
+  background: var(--purple-white);
+  z-index: 1000;
+  border-radius: 50px;
+  left: 50%;
+  right: 50%;
+  margin-left: max(-45vw, -200px);
+  margin-top: 5vw;
+  box-shadow: 0 0 50px 80px var(--pine);
+}
+.modalCloseButton {
+  font-size: 40px;
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+}
+.innerModal {
+  font-size: 24px;
+  padding: 20px;
+}
+.modalItem {
+  display: flex;
+  background: var(--pine);
+  margin: 10px 5px;
+  color: var(--light);
+  font-weight: 700;
+  padding: 10px;
+  border-radius: 20px;
+}
+.modalItem * {
+  margin-right: 30px;
+}
+.modalTitle {
+  color: var(--pine);
+  padding: 10px;
+  font-size: 30px;
+  text-align: center;
+  border-bottom: 5px solid var(--pine);
+}
 .actions {
   margin: 10px 0;
   background-color: var(--purple-white);
@@ -32,12 +74,13 @@
 }
 .scoreItem {
   font-size: 20px;
-  display: inline;
+  display: block;
   margin: 5px;
 }
 .scoreItem * {
   display: inline;
   margin-left: 10px;
+  color: var(--pine);
 }
 .interface {
   margin: 0 10px;

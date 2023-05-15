@@ -54,6 +54,9 @@ h2 {
   text-align: center;
   justify-content: center;
 }
+Link {
+  display: block;
+}
 
 .sudokuGridRow *:nth-child(3n) {
   box-shadow: inset -3px 0px 0px 0px rgb(48, 48, 48); /* Border bottom */

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import CrosswordInterface from "./CrosswordInterface";
+import EndGameModal from "./EndGameModal";
 import { FileContext } from "../FileContext";
 import { Link } from "react-router-dom";
 const Crossword = (props) => {
@@ -15,12 +16,13 @@ const Crossword = (props) => {
   const [isHorizontal, setIsHorizontal] = useState(true);
   const [clueNums, setClueNums] = useState(null);
   const [currUser, setCurrUser] = useState(0);
-  const [scores, setScores] = useState([0, 0]);
+  const [scores, setScores] = useState([0, 0, 0, 0]);
   const [challengeActive, setChallengeActive] = useState(false);
   const [revealActive, setRevealActive] = useState(false);
   const [activeClueNum, setActiveClueNum] = useState(0);
   const [inputFiller, setInputFiller] = useState("");
   const [activeAction, setActiveAction] = useState(-1);
+  const [finalScores, setFinalScores] = useState([]);
   const downRef = useRef([]);
   const acrossRef = useRef([]);
 
@@ -40,6 +42,12 @@ const Crossword = (props) => {
       window.removeEventListener("resize", handleWindowResize);
     };
   }, []);
+
+  useEffect(() => {
+    if (props.complete) {
+      setFinalScores(calcFinalScores());
+    }
+  }, [props.complete]);
 
   useEffect(() => {
     if (isHorizontal) {
@@ -74,7 +82,20 @@ const Crossword = (props) => {
         }
       }
     }
-  }, [activeCrosswordInfo]);
+  }, [activeCrosswordInfo, self]);
+
+  const calcFinalScores = () => {
+    const newScores = activeCrosswordInfo.scores.map((x) => x);
+    for (let i = 0; i < activeCrossword.length; i++) {
+      for (let j = 0; j < activeCrossword[i].length; j++) {
+        if (!activeCrossword[i][j].confirmed) {
+          newScores[activeCrossword[i][j].user]++;
+          activeCrossword[i][j].confirmed = true;
+        }
+      }
+    }
+    return newScores;
+  };
 
   const deleteLetter = () => {
     if (isHorizontal) {
@@ -256,6 +277,8 @@ const Crossword = (props) => {
 
   const useKeyDown = (currUser, i, j, array, onAdd, onDelete, keys) => {
     const onKeyDown = (event) => {
+      console.log("ss");
+      console.log(event);
       const wasAnyKeyPressed = keys.some((key) => event.key === key);
       if (wasAnyKeyPressed) {
         event.preventDefault();
@@ -287,9 +310,17 @@ const Crossword = (props) => {
       }
     };
     useEffect(() => {
-      document.addEventListener("keydown", onKeyDown);
+      document.querySelectorAll(".gridInput").forEach((item) => {
+        item.addEventListener("keydown", onKeyDown);
+        setTimeout(function () {
+          const inputEvent = new Event("keypress", { key: "s" });
+          item.dispatchEvent(inputEvent);
+        }, 500);
+      });
       return () => {
-        document.removeEventListener("keydown", onKeyDown);
+        document
+          .querySelectorAll(".gridInput")
+          .forEach((item) => item.removeEventListener("keydown", onKeyDown));
       };
     }, [onKeyDown]);
   };
@@ -366,7 +397,6 @@ const Crossword = (props) => {
   }, [activeSolution]);
 
   const doActive = (i, j, hor, byClue) => {
-    console.log(i, j);
     let tempHor = isHorizontal;
     if (hor) {
       if (hor === 1) {
@@ -441,7 +471,6 @@ const Crossword = (props) => {
       }
     }
     setActiveLine(newLine);
-    console.log("done");
     getClue(i, j, tempHor);
   };
 
@@ -475,6 +504,7 @@ const Crossword = (props) => {
     }
     props.updateCrossword();
     setScores(scores.map((x) => x));
+    doActive(active[0], active[1]);
   };
 
   const submitChallenge = () => {
@@ -502,13 +532,21 @@ const Crossword = (props) => {
     }
     props.updateCrossword();
     setScores(scores.map((x) => x));
+    doActive(active[0], active[1]);
+  };
+  const selectAll = () => {
+    for (let i = 0; i < activeCrossword.length; i++) {
+      for (let j = 0; j < activeCrossword[i].length; j++) {
+        addChallengeItem(i, j);
+      }
+    }
   };
 
   const addChallengeItem = (i, j) => {
     if (
       // activeCrossword[i][j].user !== currUser &&
-      activeCrossword[i][j].content !== "" ||
-      revealActive
+      (activeCrossword[i][j].content !== "" || revealActive) &&
+      activeSolution.grid[i][j] !== "."
     ) {
       activeCrossword[i][j].challenge = !activeCrossword[i][j].challenge;
     }
@@ -527,10 +565,8 @@ const Crossword = (props) => {
   };
 
   const getClue = (i, j, tempHor) => {
-    console.log(clueNums[0]);
     if (!tempHor) {
       while (true) {
-        console.log(clueNums[i][j]);
         if (clueNums[i][j] !== "") {
           if (activeSolution.clues.down[clueNums[i][j]]) {
             setActiveClueNum(clueNums[i][j]);
@@ -542,7 +578,6 @@ const Crossword = (props) => {
     }
     if (tempHor) {
       while (true) {
-        console.log(clueNums[i][j]);
         if (clueNums[i][j] !== "") {
           if (activeSolution.clues.across[clueNums[i][j]]) {
             setActiveClueNum(clueNums[i][j]);
@@ -828,10 +863,19 @@ const Crossword = (props) => {
             </div>
             <CrosswordInterface
               submitChallenge={submitChallenge}
+              getName={props.getName}
               submitReveal={submitReveal}
               activeAction={activeAction}
               hideActionPanel={() => setActiveAction(-1)}
+              selectAll={selectAll}
             />
+            {props.complete && (
+              <EndGameModal
+                setComplete={props.setComplete}
+                getName={props.getName}
+                scores={finalScores}
+              />
+            )}
           </div>
         </div>
       ) : (

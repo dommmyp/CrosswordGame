@@ -20,6 +20,9 @@ const Home = (props) => {
     props.resumeCrossword(index);
   };
 
+  const removeCrossword = (index) => {
+    props.removeCrossword(index);
+  };
   const initBattle = () => {
     setStartBattle(true);
     const array = [];
@@ -57,8 +60,9 @@ const Home = (props) => {
       <div className="heroSection">
         <h2 className="bigTitle">Head2Head Puzzles</h2>
         <div className="heroText">
-          This is filler text thi strh sr ts rth srth srt h srththis is filler
-          text this is filler text this is filler text
+          Welcome to Head2HeadPuzzles.com, the ultimate online destination for
+          competitive puzzle gaming with friends. Join now and challenge your
+          friends to epic puzzle showdowns!
         </div>
         {!cont && !startBattle && (
           <button className="homepageButton" onClick={() => resumeBattle()}>
@@ -110,29 +114,35 @@ const Home = (props) => {
               opponentsReady &&
               props.crosswords.map((item, index) => {
                 return (
-                  <Link
-                    to="/crossword"
-                    key={index}
-                    className="crosswordListItem"
-                    onClick={() => newCrossword(index)}
-                  >
-                    <div>{item.content.info.title}</div>
-                    <div>{item.content.info.author}</div>
-                  </Link>
+                  <div key={index} className="crosswordListItem">
+                    <Link to="/crossword" onClick={() => newCrossword(index)}>
+                      {item.content.info.title}
+                    </Link>
+                  </div>
                 );
               })}
             {self &&
               cont &&
               self.crosswords.map((item, index) => {
                 return (
-                  <Link
+                  <div
                     to="/crossword"
                     key={index}
                     className="crosswordListItem"
-                    onClick={() => resumeCrossword(index)}
                   >
-                    <div>{item.name}</div>
-                  </Link>
+                    <Link
+                      to="/crossword"
+                      onClick={() => resumeCrossword(index)}
+                    >
+                      {item.name}
+                    </Link>
+                    <div
+                      className="removeButton"
+                      onClick={() => removeCrossword(index)}
+                    >
+                      -
+                    </div>
+                  </div>
                 );
               })}
           </div>

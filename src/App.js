@@ -15,6 +15,7 @@ import {
   getDocs,
   setDoc,
   getDoc,
+  deleteDoc,
   query,
   where,
   onSnapshot,
@@ -56,7 +57,7 @@ function App() {
   const [crosswords, setCrosswords] = useState([]);
   const [user] = useAuthState(auth);
   const [showProfile, setShowProfile] = useState(false);
-  const [isHome, setIsHome] = useState(true);
+  const [complete, setComplete] = useState(false);
   useEffect(() => {
     getCrosswordData();
   }, []);
@@ -78,6 +79,22 @@ function App() {
     }
   }, [auth.currentUser]);
 
+  const getName = async (uid) => {
+    const userDoc = doc(db, "users", uid);
+    const docSnapUser = await getDoc(userDoc);
+    const userData = docSnapUser.data();
+    let userNum = -1;
+    userData.crosswords.forEach((item) => {
+      if (item.gameID === activeCrosswordInfo.gameID) {
+        userNum = item.userNum;
+      }
+    });
+    return {
+      name: userData.name,
+      userNum: userNum,
+    };
+  };
+
   const getCrosswordData = async () => {
     const response = await fetch(
       "https://api.foracross.com/api/puzzle_list?page=0&pageSize=50&filter[nameOrTitleFilter]=&filter[sizeFilter][Mini]=true&filter[sizeFilter][Standard]=true"
@@ -85,10 +102,47 @@ function App() {
     const jsonData = await response.json();
     setCrosswords(jsonData.puzzles);
   };
+  const removeCrossword = async (index) => {
+    const gameID = self.crosswords[index].gameID;
+    const docc = doc(db, "crosswords", gameID);
+    const docSnap = await getDoc(docc);
+    const data = docSnap.data();
+    data.players = data.players.filter((item, index) => {
+      if (item === self.uid) {
+        data.scores = data.scores.splice(index, 1);
+      }
+      return item !== self.uid;
+    });
+    if (data.players.length === 0) {
+      deleteDoc(docc);
+    } else {
+      setDoc(docc, {
+        grid: data.grid,
+        pid: data.pid,
+        gameID: data.gameID,
+        scores: data.scores,
+        players: data.players,
+      });
+    }
+
+    self.crosswords = self.crosswords.filter((item) => {
+      return gameID !== item.gameID;
+    });
+    setSelf({ ...self });
+    await setDoc(doc(userRef, self.uid), {
+      uid: self.uid,
+      crosswords: self.crosswords,
+      email: self.email,
+      name: self.name,
+      pendingGames: self.pendingGames,
+      friends: self.friends,
+    });
+  };
 
   const resumeCrossword = async (index) => {
     const gameID = self.crosswords[index].gameID;
     const pid = self.crosswords[index].pid;
+
     onSnapshot(doc(db, "crosswords", gameID), (doc) => {
       const content = doc.data();
       const newArr = [];
@@ -96,6 +150,7 @@ function App() {
         newArr[i] = content.grid[i].x;
       }
       setActiveCrossword(newArr);
+
       setActiveCrosswordInfo({
         pid: content.pid,
         gameID: content.gameID,
@@ -127,47 +182,33 @@ function App() {
   const newCrossword = async (index, opponentIDs) => {
     const pid = crosswords[index].pid;
     const gameID = pid + "-" + Date.now();
-    const players = [];
     const userDoc = doc(db, "users", auth.currentUser.uid);
     const docSnapUser = await getDoc(userDoc);
     const userData = docSnapUser.data();
 
+    opponentIDs.push(userData.uid);
     // add new crossword to user crossword list in database
-    userData.crosswords.push({
-      gameID: gameID,
-      name: crosswords[index].content.info.title,
-      pid: pid,
-      userNum: 0,
-    });
-
-    setSelf(userData);
     let currNum = 0;
-    players[currNum++] = {
-      uid: userData.uid,
-      email: userData.email,
-      name: userData.name,
-    };
-    await setDoc(doc(userRef, auth.currentUser.uid), {
-      uid: userData.uid,
-      crosswords: userData.crosswords,
-      email: userData.email,
-      name: userData.name,
-      pendingGames: userData.pendingGames,
-      friends: userData.friends,
-    });
-    const a = new Promise((resolve) => {
-      opponentIDs.forEach(async (oppID) => {
-        console.log(oppID);
-        const oppDoc = doc(db, "users", oppID);
-        const docSnapOpp = await getDoc(oppDoc);
-        const oppData = docSnapOpp.data();
-        oppData.crosswords.push({
-          gameID: gameID,
-          name: crosswords[index].content.info.title,
-          pid: pid,
-          userNum: currNum++,
-        });
-        await setDoc(doc(userRef, oppID), {
+    opponentIDs.forEach(async (oppID) => {
+      const oppDoc = doc(db, "users", oppID);
+      const docSnapOpp = await getDoc(oppDoc);
+      const oppData = docSnapOpp.data();
+      oppData.crosswords.push({
+        gameID: gameID,
+        name: crosswords[index].content.info.title,
+        pid: pid,
+        userNum: currNum++,
+      });
+      await setDoc(doc(userRef, oppID), {
+        uid: oppData.uid,
+        crosswords: oppData.crosswords,
+        email: oppData.email,
+        name: oppData.name,
+        pendingGames: oppData.pendingGames,
+        friends: oppData.friends,
+      });
+      if (oppID === userData.uid) {
+        setSelf({
           uid: oppData.uid,
           crosswords: oppData.crosswords,
           email: oppData.email,
@@ -175,64 +216,56 @@ function App() {
           pendingGames: oppData.pendingGames,
           friends: oppData.friends,
         });
-        players.push({
-          uid: oppData.uid,
-          email: oppData.email,
-          name: oppData.name,
-        });
-      });
-      resolve(players);
-    });
-
-    a.then((players) => {
-      const emptyCross = [];
-      const arr = [];
-      for (let i = 0; i < crosswords[index].content.grid.length; i++) {
-        emptyCross[i] = {};
-        arr[i] = [];
-        for (let j = 0; j < crosswords[index].content.grid[0].length; j++) {
-          arr[i][j] = {
-            user: -1,
-            content: "",
-            confirmed: false,
-            challenge: false,
-          };
-        }
-        emptyCross[i].x = arr[i];
       }
-      console.log(players);
-      setDoc(doc(crosswordsRef, gameID), {
-        grid: emptyCross,
-        pid: pid,
-        gameID: gameID,
-        scores: [0, 0, 0, 0],
-        players: players,
-      });
-      setActiveCrossword(arr);
-
-      // onSnapshot(doc(db, "crosswords", gameID), (doc) => {
-      //   const content = doc.data();
-      //   const newArr = [];
-      //   for (let i = 0; i < content.grid.length; i++) {
-      //     newArr[i] = content.grid[i].x;
-      //   }
-      //   setActiveCrossword(newArr);
-      //   setActiveCrosswordInfo({
-      //     pid: content.pid,
-      //     gameID: content.gameID,
-      //     scores: content.scores,
-      //     players: content.players,
-      //   });
-      //   console.log(content.players);
-      // });
-      setActiveCrosswordInfo({
-        pid: pid,
-        gameID: gameID,
-        scores: [0, 0, 0, 0],
-        players: players,
-      });
-      setActiveSolution(crosswords[index].content);
     });
+
+    const emptyCross = [];
+    const arr = [];
+    for (let i = 0; i < crosswords[index].content.grid.length; i++) {
+      emptyCross[i] = {};
+      arr[i] = [];
+      for (let j = 0; j < crosswords[index].content.grid[0].length; j++) {
+        arr[i][j] = {
+          user: -1,
+          content: "",
+          confirmed: false,
+          challenge: false,
+        };
+      }
+      emptyCross[i].x = arr[i];
+    }
+    setDoc(doc(crosswordsRef, gameID), {
+      grid: emptyCross,
+      pid: pid,
+      gameID: gameID,
+      scores: [0, 0, 0, 0],
+      players: opponentIDs,
+    });
+    setActiveCrossword(arr);
+
+    onSnapshot(doc(db, "crosswords", gameID), (doc) => {
+      const content = doc.data();
+      const newArr = [];
+      for (let i = 0; i < content.grid.length; i++) {
+        newArr[i] = content.grid[i].x;
+      }
+      setActiveCrossword(newArr);
+
+      setActiveCrosswordInfo({
+        pid: content.pid,
+        gameID: content.gameID,
+        scores: content.scores,
+        players: content.players,
+      });
+    });
+    setActiveCrosswordInfo({
+      pid: pid,
+      gameID: gameID,
+      scores: [0, 0, 0, 0],
+      players: opponentIDs,
+    });
+    setSelf(userData);
+    setActiveSolution(crosswords[index].content);
   };
 
   const updateCrossword = async () => {
@@ -254,17 +287,16 @@ function App() {
     let correct = true;
     activeCrossword.forEach((item, i) => {
       item.forEach((subItem, j) => {
-        if (subItem.content !== ".") {
+        if (activeSolution.grid[i][j] !== ".") {
           if (subItem.content !== activeSolution.grid[i][j].toLowerCase()) {
             correct = false;
           } else {
-            console.log("correct");
           }
         }
       });
     });
     if (correct) {
-      window.alert("correct");
+      setComplete(true);
     }
   };
 
@@ -272,7 +304,6 @@ function App() {
     const snapshot = await firebase.firestore().collection("users").get();
     let friendsData = [];
     snapshot.docs.map((doc) => {
-      // console.log(doc.data())
       if (
         self.friends.filter((item) => {
           return item.uid === doc.data().uid;
@@ -330,11 +361,19 @@ function App() {
       friends: newFriends,
     });
   };
+  const reset = () => {
+    setShowProfile(false);
+    setComplete(false);
+  };
 
   return (
     <div className="App">
       <BrowserRouter>
-        <Navbar setShowProfile={setShowProfile} showProfile={showProfile} />
+        <Navbar
+          reset={reset}
+          setShowProfile={setShowProfile}
+          showProfile={showProfile}
+        />
         <Profile
           show={showProfile}
           setShowProfile={setShowProfile}
@@ -351,6 +390,7 @@ function App() {
                 path="/"
                 element={
                   <Home
+                    removeCrossword={removeCrossword}
                     newCrossword={newCrossword}
                     crosswords={crosswords}
                     resumeCrossword={resumeCrossword}
@@ -359,7 +399,14 @@ function App() {
               />
               <Route
                 path="/crossword"
-                element={<Crossword updateCrossword={updateCrossword} />}
+                element={
+                  <Crossword
+                    getName={getName}
+                    updateCrossword={updateCrossword}
+                    complete={complete}
+                    setComplete={setComplete}
+                  />
+                }
               />
               <Route path="/sudoku" element={<Sudoku />} />
               <Route path="/wordhunt" element={<Minesweeper />} />
@@ -396,9 +443,19 @@ const SignIn = () => {
   };
 
   return (
-    <button className="logIn" onClick={signInWithGoogle}>
-      Sign In
-    </button>
+    <div className="homePage">
+      <div className="heroSection">
+        <h2 className="bigTitle">Head2Head Puzzles</h2>
+        <div className="heroText">
+          Welcome to Head2HeadPuzzles.com, the ultimate online destination for
+          competitive puzzle gaming with friends. Join now and challenge your
+          friends to epic puzzle showdowns!
+        </div>
+        <button className="homepageButton" onClick={signInWithGoogle}>
+          Sign In
+        </button>
+      </div>
+    </div>
   );
 };
 
